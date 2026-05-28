@@ -1,0 +1,52 @@
+@import "tailwindcss";
+
+/* Fonts */
+@import "../public/fonts/clash-display/css/clash-display.css";
+
+:root {
+  --background: #eeedee;
+  --foreground: #101010;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  /* Fonts */
+  --font-clash-display: "ClashDisplay-Variable", sans-serif;
+
+  /* Colors */
+  --color-bg-default: #eeedee;
+  --color-bg-primary: #db574d;
+  --color-bg-secondary: #000;
+  --color-border-default: rgba(16, 16, 16, 0.1);
+  --color-border-primary: #db574d;
+  --color-border-secondary: #000;
+  --color-text-default: #101010;
+  --color-text-inverse: #fff;
+  --color-text-primary: #db574d;
+}
+
+/* Utilities */
+@utility custom-flex-col {
+  @apply flex flex-col;
+
+  > * {
+    @apply w-full;
+  }
+}
+
+@utility custom-flex-center {
+  @apply flex items-center justify-center;
+}
+
+/* Base */
+@layer base {
+  body {
+    @apply w-full min-h-screen bg-bg-default text-text-default font-clash-display;
+  }
+
+  hr {
+    @apply border-black opacity-10;
+  }
+}
