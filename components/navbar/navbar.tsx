@@ -8,7 +8,7 @@ import type { NavbarProps } from "./types";
 
 // Imports
 import { cn } from "@/utils/cn";
-import { NAVBAR_LINKS } from "./data";
+import { PAGE_DATA, PAGES } from "../global/data";
 import { isActiveRoute } from "@/utils/isActiveRoute";
 
 const Navbar: React.FC<NavbarProps> = ({ className }) => {
@@ -22,23 +22,27 @@ const Navbar: React.FC<NavbarProps> = ({ className }) => {
         className,
       )}
     >
-      <Link href="/" className="text-2xl leading-[110%]">
+      <Link href="/404" className="text-2xl leading-[110%]">
         Jacob Grönberg
       </Link>
 
       <div className="flex items-center gap-6">
-        {NAVBAR_LINKS.map(({ path, label }) => (
-          <Link
-            key={path}
-            href={path}
-            className={cn(
-              "text-lg hover:text-text-primary transition-colors duration-200 leading-[100%]",
-              isActiveRoute({ href: path, pathname }) && "text-text-primary",
-            )}
-          >
-            {label}
-          </Link>
-        ))}
+        {PAGES.map((page) => {
+          const { label } = PAGE_DATA[page];
+
+          return (
+            <Link
+              key={page}
+              href={page}
+              className={cn(
+                "text-lg hover:text-text-primary transition-colors duration-200 leading-[100%]",
+                isActiveRoute({ href: page, pathname }) && "text-text-primary",
+              )}
+            >
+              {label}
+            </Link>
+          );
+        })}
       </div>
     </nav>
   );

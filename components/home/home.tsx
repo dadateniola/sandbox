@@ -22,7 +22,7 @@ import { EXHIBITIONS } from "../exhibitions/data";
 
 const Home = () => {
   return (
-    <main className="pt-38.5 custom-flex-col gap-40">
+    <div className="pt-38.5 custom-flex-col gap-40">
       {/* Hero Section */}
       <section id="hero">
         <div className="relative">
@@ -146,7 +146,7 @@ const Home = () => {
 
       {/* Contact Section */}
       <section id="contact">
-        <div className="py-56 flex items-center justify-center gap-17.5">
+        <div className="py-[20vh] flex items-center justify-center gap-17.5">
           <Link href="/contact">
             <CTA size={220}>
               Get in <br /> Touch
@@ -159,7 +159,7 @@ const Home = () => {
           </h2>
         </div>
       </section>
-    </main>
+    </div>
   );
 };
 

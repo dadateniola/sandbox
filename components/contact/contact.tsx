@@ -10,7 +10,7 @@ import { CTA } from "../global/components";
 
 const Contact = () => {
   return (
-    <main>
+    <>
       {/* Hero Section */}
       <section id="hero">
         <div className="min-h-[110vh] pt-35 pb-20 custom-flex-center">
@@ -43,7 +43,7 @@ const Contact = () => {
           </div>
         </div>
       </section>
-    </main>
+    </>
   );
 };
 

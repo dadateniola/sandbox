@@ -9,10 +9,10 @@ import { CTA } from "../global/components";
 
 const NotFound = () => {
   return (
-    <main>
+    <>
       {/* Hero Section */}
       <section id="hero">
-        <div className="min-h-[110vh] custom-flex-center">
+        <div className="min-h-[110vh] pt-35 pb-20 custom-flex-center">
           <div className="flex flex-col items-center">
             <h1 className="z-2 text-text-default text-[min(7vw,120px)] text-center leading-[90%]">
               Page Not <br /> <span className="text-text-primary">Found</span>
@@ -21,7 +21,7 @@ const NotFound = () => {
             <Image
               src={Eve}
               alt="Eve"
-              className="-mt-9 w-1/2 h-auto object-cover"
+              className="-mt-9 w-full h-auto object-cover"
             />
 
             <Link href="/">
@@ -32,7 +32,7 @@ const NotFound = () => {
           </div>
         </div>
       </section>
-    </main>
+    </>
   );
 };
 

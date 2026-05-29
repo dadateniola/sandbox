@@ -1,5 +1,21 @@
 import { StaticImageData } from "next/image";
 
+// Imports
+import { PAGES } from "./data";
+
+export type Page = (typeof PAGES)[number];
+
+export type Transition = {
+  path: string;
+  scrollY: number;
+} | null;
+
+export interface PageWrapperProps {
+  scrollOffset?: number;
+  children: React.ReactNode;
+  state: "entering" | "active" | "exiting" | "inactive";
+}
+
 export interface CTAProps {
   size: number;
   className?: string;

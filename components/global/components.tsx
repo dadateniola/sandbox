@@ -2,7 +2,13 @@ import Link from "next/link";
 import Image from "next/image";
 
 // Types
-import type { CTAProps, ExhibitionCardProps, HomeSectionProps, ProjectCardProps } from "./types";
+import type {
+  CTAProps,
+  HomeSectionProps,
+  PageWrapperProps,
+  ProjectCardProps,
+  ExhibitionCardProps,
+} from "./types";
 
 // Images
 import { ArrowRight, ArrowTopRight } from "../svg/svg";
@@ -11,6 +17,76 @@ import { ArrowRight, ArrowTopRight } from "../svg/svg";
 import { cn } from "@/utils/cn";
 
 // Components
+export const PageLoader: React.FC = () => (
+  <div className="fixed z-10 inset-0 custom-flex-center bg-background overflow-hidden">
+    <div
+      className={cn(
+        "custom-flex-col gap-5",
+        "text-text-primary text-3xl text-center leading-[90%] tracking-[-0.6px] uppercase",
+      )}
+    >
+      <p>Jacob</p>
+      <p>Grønberg</p>
+    </div>
+  </div>
+);
+
+export const PageWrapper: React.FC<PageWrapperProps> = ({
+  state,
+  children,
+  scrollOffset,
+}) => {
+  const isTransitioning = state === "exiting" || state === "entering";
+
+  return (
+    <div
+      data-state={state}
+      className={cn("w-full h-screen", isTransitioning ? "fixed" : "relative", {
+        "z-2": state === "exiting",
+        "z-1": state === "entering",
+      })}
+    >
+      <div
+        data-overlay
+        className="absolute z-2 inset-0 bg-bg-secondary pointer-events-none opacity-0 invisible"
+      ></div>
+
+      <main
+        className={cn(
+          "z-1 w-full h-screen",
+          isTransitioning ? "absolute" : "relative",
+        )}
+      >
+        <div
+          className="w-full h-max px-15 xl:px-35 bg-background"
+          style={{
+            transform:
+              state === "exiting"
+                ? `translateY(-${scrollOffset}px)`
+                : undefined,
+          }}
+        >
+          {children}
+        </div>
+      </main>
+    </div>
+  );
+};
+
+export const PageMobile: React.FC = () => (
+  <div className="w-full h-screen px-4 custom-flex-center">
+    <p className="text-text-primary text-lg font-medium text-center leading-[110%]">
+      This experience was designed for larger screens.
+      <br />
+      <br />
+      I didn&apos;t have the strength to make the mobile version yet 🙂
+      <br />
+      <br />
+      Please visit on a device wider than 1024px.
+    </p>
+  </div>
+);
+
 export const CTA: React.FC<CTAProps> = ({
   size,
   style,
@@ -34,29 +110,35 @@ export const CTA: React.FC<CTAProps> = ({
   </div>
 );
 
-export const HomeSection: React.FC<HomeSectionProps> = ({ href, title, children }) => (
-  <div className="custom-flex-col gap-32">
-    <div className="flex items-center justify-between gap-10">
-      <h2 className="text-[min(6vw,100px)] leading-[110%] uppercase">
-        {title.split(" ").map((word, index) =>
-          index === title.split(" ").length - 1 ? (
-            <span key={index} className="text-text-primary capitalize">
-              {word}
-            </span>
-          ) : (
-            word + " "
-          ),
-        )}
-      </h2>
+export const HomeSection: React.FC<HomeSectionProps> = ({
+  href,
+  title,
+  children,
+}) => (
+  <section id={title.split(" ").join("-").toLowerCase()}>
+    <div className="custom-flex-col gap-32">
+      <div className="flex items-center justify-between gap-10">
+        <h2 className="text-[min(6vw,100px)] leading-[110%] uppercase">
+          {title.split(" ").map((word, index) =>
+            index === title.split(" ").length - 1 ? (
+              <span key={index} className="text-text-primary capitalize">
+                {word}
+              </span>
+            ) : (
+              word + " "
+            ),
+          )}
+        </h2>
 
-      <Link href={href} className="flex items-center gap-3">
-        <p className="text-lg leading-[120%]">View All</p>
-        <ArrowRight />
-      </Link>
+        <Link href={href} className="flex items-center gap-3">
+          <p className="text-lg leading-[120%]">View All</p>
+          <ArrowRight />
+        </Link>
+      </div>
+
+      {children}
     </div>
-
-    {children}
-  </div>
+  </section>
 );
 
 export const ProjectCard: React.FC<ProjectCardProps> = ({

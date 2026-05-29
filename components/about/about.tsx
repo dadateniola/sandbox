@@ -5,7 +5,7 @@ import Hernandez from "@/public/images/hernandez.png";
 
 const About = () => {
   return (
-    <main className="pt-51 pb-20 custom-flex-col gap-32">
+    <div className="pt-51 pb-20 custom-flex-col gap-32">
       {/* Hero Section */}
       <section id="hero">
         <div className="relative flex justify-start">
@@ -52,7 +52,7 @@ const About = () => {
           </p>
         </div>
       </section>
-    </main>
+    </div>
   );
 };
 

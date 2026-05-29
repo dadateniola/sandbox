@@ -9,7 +9,7 @@ import { ExhibitionCard } from "../global/components";
 
 const Exhibitions = () => {
   return (
-    <main className="pt-51 pb-20 custom-flex-col gap-48">
+    <div className="pt-51 pb-20 custom-flex-col gap-48">
       {/* Hero Section */}
       <section id="hero">
         <div className="flex flex-col items-center justify-center gap-23">
@@ -46,7 +46,7 @@ const Exhibitions = () => {
           ))}
         </div>
       </section>
-    </main>
+    </div>
   );
 };
 

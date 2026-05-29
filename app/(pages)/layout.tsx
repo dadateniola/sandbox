@@ -3,19 +3,28 @@
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 
+// Types
+import type { Page, Transition } from "@/components/global/types";
+
 // Pages
-import Home from "@/components/home/home";
-import About from "@/components/about/about";
-import Contact from "@/components/contact/contact";
-import Projects from "@/components/projects/projects";
 import NotFound from "@/components/not-found/not-found";
-import Exhibitions from "@/components/exhibitions/exhibitions";
 
 // Imports
-import { cn } from "@/utils/cn";
 import Navbar from "@/components/navbar/navbar";
+import { PAGE_DATA } from "@/components/global/data";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
-import { NAVBAR_LINKS } from "@/components/navbar/data";
+
+import {
+  PageLoader,
+  PageMobile,
+  PageWrapper,
+} from "@/components/global/components";
+
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+import { CustomEase } from "gsap/CustomEase";
+
+gsap.registerPlugin(CustomEase);
 
 const SlugLayout = () => {
   // Hooks
@@ -23,67 +32,114 @@ const SlugLayout = () => {
   const isMobile = useMediaQuery("(max-width: 1023px)");
 
   // States
-  const [currentPath, setCurrentPath] = useState<
-    (typeof NAVBAR_LINKS)[number]["path"] | ({} & string)
-  >(pathname);
+  const [activePage, setActivePage] = useState(pathname);
+  const [transition, setTransition] = useState<Transition>(null);
+
+  const transitioningPage = transition?.path ?? null;
+  const scrollOffset = transition?.scrollY ?? 0;
 
   // Effects
   useEffect(() => {
-    const changePath = () => setCurrentPath(pathname);
-    changePath();
+    const navigate = () => {
+      if (pathname === activePage || transition?.path === pathname) return;
+      const scrollY = window.scrollY;
+      setTransition({ path: pathname, scrollY });
+    };
+
+    navigate();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
+
+  // Animations
+  useGSAP(() => {
+    if (!transitioningPage) return;
+    const nextPage = transitioningPage;
+
+    const exitingPage = document.querySelector(`[data-state="exiting"]`);
+    const enteringPage = document.querySelector(`[data-state="entering"]`);
+    if (!exitingPage || !enteringPage) return;
+
+    const exitingPageMain = exitingPage.querySelector("main");
+    const exitingPageOverlay = exitingPage.querySelector("[data-overlay]");
+
+    const tl = gsap.timeline({
+      defaults: {
+        ease: CustomEase.create(
+          "custom",
+          "M0,0 C0.173,0 0.242,0.036 0.322,0.13 0.401,0.223 0.412,0.373 0.465,0.512 0.508,0.628 0.515,0.833 0.621,0.925 0.694,0.989 0.869,1 1,1 ",
+        ),
+        duration: 1.3,
+      },
+    });
+
+    tl.set(exitingPage, {
+      clipPath: "polygon(0 0, 100% 0, 100% 110%, 0% 100%)",
+    }).set(enteringPage, {
+      y: window.innerHeight / 2,
+      rotate: 7,
+      scale: 1.3,
+    });
+
+    tl.to(exitingPageMain, { y: -window.innerHeight, rotate: -7, scale: 1.3 })
+      .to(exitingPageOverlay, { opacity: 1, visibility: "visible" }, "<")
+      .to(
+        exitingPage,
+        { clipPath: "polygon(0 0, 100% 0, 100% 0%, 0% 0%)" },
+        "<",
+      )
+      .to(enteringPage, { y: 0, rotate: 0, scale: 1 }, "<")
+      .call(() => {
+        setActivePage(nextPage);
+        setTransition(null);
+      });
+  }, [transitioningPage]);
+
+  // Render
+  const renderedPages = [...new Set([activePage, transitioningPage])].filter(
+    (page): page is Page => Boolean(page),
+  );
 
   return (
     <>
       {/* Loading State */}
-      {isMobile === undefined && (
-        <div className="fixed z-10 inset-0 custom-flex-center bg-background overflow-hidden">
-          <div
-            className={cn(
-              "custom-flex-col gap-5",
-              "text-text-primary text-3xl text-center leading-[90%] tracking-[-0.6px] uppercase",
-            )}
-          >
-            <p>Jacob</p>
-            <p>Grønberg</p>
-          </div>
-        </div>
-      )}
+      {isMobile === undefined && <PageLoader />}
 
       {isMobile ? (
         // Mobile Layout
-        <div className="w-full h-screen px-4 custom-flex-center">
-          <p className="text-text-primary text-lg font-medium text-center leading-[110%]">
-            This experience was designed for larger screens.
-            <br />
-            <br />
-            I didn&apos;t have the strength to make the mobile version yet 🙂
-            <br />
-            <br />
-            Please visit on a device wider than 1024px.
-          </p>
-        </div>
+        <PageMobile />
       ) : (
         // Desktop Layout
         <>
-          <Navbar className="z-2" />
+          <Navbar className="z-5" />
 
           {/* Content */}
-          <div className="relative z-1 px-15 xl:px-35 overflow-hidden">
-            {currentPath === "/" ? (
-              <Home />
-            ) : currentPath === "/projects" ? (
-              <Projects />
-            ) : currentPath === "/exhibitions" ? (
-              <Exhibitions />
-            ) : currentPath === "/about" ? (
-              <About />
-            ) : currentPath === "/contact" ? (
-              <Contact />
-            ) : (
-              <NotFound />
-            )}
-          </div>
+          {renderedPages.map((pagePath) => {
+            const page = PAGE_DATA[pagePath];
+
+            const isActive = pagePath === activePage;
+            const isTransitioning = pagePath === transitioningPage;
+            const Component = page?.content ?? NotFound;
+
+            return (
+              <PageWrapper
+                key={pagePath}
+                state={
+                  transitioningPage
+                    ? isActive
+                      ? "exiting"
+                      : isTransitioning
+                        ? "entering"
+                        : "inactive"
+                    : isActive
+                      ? "active"
+                      : "inactive"
+                }
+                scrollOffset={scrollOffset}
+              >
+                <Component />
+              </PageWrapper>
+            );
+          })}
         </>
       )}
     </>

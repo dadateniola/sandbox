@@ -6,7 +6,7 @@ import { CTA, ProjectCard } from "../global/components";
 
 const Projects = () => {
   return (
-    <main className="pt-46.25 pb-20 custom-flex-col gap-42.5">
+    <div className="pt-46.25 pb-20 custom-flex-col gap-42.5">
       {/* Hero Section */}
       <section id="hero">
         <div className="flex items-start gap-30">
@@ -41,7 +41,7 @@ const Projects = () => {
           )}
         </div>
       </section>
-    </main>
+    </div>
   );
 };
 
