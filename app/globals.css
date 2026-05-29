@@ -59,4 +59,8 @@
   hr {
     @apply border-black opacity-10;
   }
+
+  img {
+    @apply bg-border-default;
+  }
 }
