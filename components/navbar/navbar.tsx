@@ -22,7 +22,7 @@ const Navbar: React.FC<NavbarProps> = ({ className }) => {
         className,
       )}
     >
-      <Link href="/404" className="text-2xl leading-[110%]">
+      <Link href="/not-found" className="text-2xl leading-[110%]">
         Jacob Grönberg
       </Link>
 
