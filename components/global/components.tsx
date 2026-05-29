@@ -15,6 +15,7 @@ import { ArrowRight, ArrowTopRight } from "../svg/svg";
 
 // Imports
 import { cn } from "@/utils/cn";
+import React from "react";
 
 // Components
 export const PageLoader: React.FC = () => (
@@ -31,48 +32,6 @@ export const PageLoader: React.FC = () => (
   </div>
 );
 
-export const PageWrapper: React.FC<PageWrapperProps> = ({
-  state,
-  children,
-  scrollOffset,
-}) => {
-  const isTransitioning = state === "exiting" || state === "entering";
-
-  return (
-    <div
-      data-state={state}
-      className={cn("w-full h-screen", isTransitioning ? "fixed" : "relative", {
-        "z-2": state === "exiting",
-        "z-1": state === "entering",
-      })}
-    >
-      <div
-        data-overlay
-        className="absolute z-2 inset-0 bg-bg-secondary pointer-events-none opacity-0 invisible"
-      ></div>
-
-      <main
-        className={cn(
-          "z-1 w-full h-screen",
-          isTransitioning ? "absolute" : "relative",
-        )}
-      >
-        <div
-          className="w-full h-max px-15 xl:px-35 bg-background"
-          style={{
-            transform:
-              state === "exiting"
-                ? `translateY(-${scrollOffset}px)`
-                : undefined,
-          }}
-        >
-          {children}
-        </div>
-      </main>
-    </div>
-  );
-};
-
 export const PageMobile: React.FC = () => (
   <div className="w-full h-screen px-4 custom-flex-center">
     <p className="text-text-primary text-lg font-medium text-center leading-[110%]">
@@ -86,6 +45,61 @@ export const PageMobile: React.FC = () => (
     </p>
   </div>
 );
+
+export const PageWrapper = React.forwardRef<HTMLDivElement, PageWrapperProps>(
+  ({ state, children, className, scrollOffset, ...props }, ref) => {
+    const shouldBeFixed =
+      state === "exiting" || state === "entering" || state === "fixed";
+
+    return (
+      <div
+        ref={ref}
+        data-state={state}
+        className={cn(
+          "w-full h-screen",
+          shouldBeFixed ? "fixed" : "relative",
+          {
+            "z-2": state === "exiting",
+            "z-1": state === "entering",
+          },
+          className,
+        )}
+        {...props}
+      >
+        <div
+          data-overlay
+          className="absolute z-2 inset-0 bg-bg-secondary pointer-events-none opacity-0 invisible"
+        ></div>
+
+        <div
+          data-content
+          className={cn(
+            "z-1 w-full h-screen",
+            shouldBeFixed ? "absolute" : "relative",
+          )}
+        >
+          <div
+            className={cn(
+              state === "fixed"
+                ? "size-full"
+                : "w-full h-max px-15 xl:px-35 bg-background",
+            )}
+            style={{
+              transform:
+                state === "exiting"
+                  ? `translateY(-${scrollOffset}px)`
+                  : undefined,
+            }}
+          >
+            {children}
+          </div>
+        </div>
+      </div>
+    );
+  },
+);
+
+PageWrapper.displayName = "PageWrapper";
 
 export const CTA: React.FC<CTAProps> = ({
   size,

@@ -1,19 +1,17 @@
-"use client";
-
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 
 // Types
 import type { NavbarProps } from "./types";
 
 // Imports
 import { cn } from "@/utils/cn";
-import { PAGE_DATA, PAGES } from "../global/data";
-import { isActiveRoute } from "@/utils/isActiveRoute";
 
-const Navbar: React.FC<NavbarProps> = ({ className }) => {
-  // Hooks
-  const pathname = usePathname();
+const Navbar: React.FC<NavbarProps> = ({
+  menuState,
+  className,
+  onMenuClick,
+}) => {
+  const menuOpen = menuState === "open" || menuState === "opening";
 
   return (
     <nav
@@ -26,24 +24,47 @@ const Navbar: React.FC<NavbarProps> = ({ className }) => {
         Jacob Grönberg
       </Link>
 
-      <div className="flex items-center gap-6">
-        {PAGES.map((page) => {
-          const { label } = PAGE_DATA[page];
+      <button onClick={onMenuClick} className="relative group">
+        <div
+          className={cn(
+            "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-50 rounded-full border border-border-primary",
+            "transition-all duration-300",
+            !menuOpen && "scale-0",
+            {
+              "delay-500": menuState === "opening",
+              "group-hover:bg-bg-primary": menuState === "open",
+            },
+          )}
+        />
 
-          return (
-            <Link
-              key={page}
-              href={page}
-              className={cn(
-                "text-lg hover:text-text-primary transition-colors duration-200 leading-[100%]",
-                isActiveRoute({ href: page, pathname }) && "text-text-primary",
-              )}
-            >
-              {label}
-            </Link>
-          );
-        })}
-      </div>
+        <div
+          className={cn(
+            "flex flex-col items-end gap-2.5",
+            "*:border-t *:border-border-secondary *:transition-all *:duration-300",
+            {
+              "group-hover:*:border-white": menuState === "open",
+            },
+          )}
+        >
+          <div
+            className={cn(
+              "origin-left",
+              menuOpen
+                ? "w-10 rotate-45 translate-x-1.5 -translate-y-1"
+                : "w-12.5",
+            )}
+          ></div>
+          <div className={cn("w-8.75", menuOpen && "opacity-0")}></div>
+          <div
+            className={cn(
+              "origin-right",
+              menuOpen
+                ? "w-10 -rotate-45 -translate-x-1.5 -translate-y-6.25"
+                : "w-11.25",
+            )}
+          ></div>
+        </div>
+      </button>
     </nav>
   );
 };

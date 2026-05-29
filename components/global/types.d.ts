@@ -10,10 +10,13 @@ export type Transition = {
   scrollY: number;
 } | null;
 
+export type MenuState = "open" | "opening" | "closing" | "closed" | "hijacked";
+
 export interface PageWrapperProps {
+  className?: string;
   scrollOffset?: number;
   children: React.ReactNode;
-  state: "entering" | "active" | "exiting" | "inactive";
+  state: "entering" | "active" | "exiting" | "inactive" | "fixed";
 }
 
 export interface CTAProps {

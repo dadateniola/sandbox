@@ -63,4 +63,8 @@
   img {
     @apply bg-border-default;
   }
+
+  button {
+    @apply cursor-pointer;
+  }
 }
