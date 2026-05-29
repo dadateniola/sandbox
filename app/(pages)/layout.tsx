@@ -45,13 +45,16 @@ const SlugLayout = () => {
   // Effects
   useEffect(() => {
     const navigate = () => {
+      // Ignore if we're already on this page or it's already queued as next.
       if (pathname === activePath || transition?.path === pathname) return;
 
+      // If an animation is running, keep only the latest destination.
       if (isTransitioningRef.current) {
         queuedPathRef.current = pathname;
         return;
       }
 
+      // Start a new transition and remember the current scroll position.
       isTransitioningRef.current = true;
       const scrollY = window.scrollY;
       setTransition({ path: pathname, scrollY });
@@ -66,6 +69,7 @@ const SlugLayout = () => {
     if (!transitioningPage) return;
     const nextPage = transitioningPage;
 
+    // Grab both layers: the page leaving and the page coming in.
     const exitingPage = document.querySelector(`[data-state="exiting"]`);
     const enteringPage = document.querySelector(`[data-state="entering"]`);
     if (!exitingPage || !enteringPage) return;
@@ -100,11 +104,15 @@ const SlugLayout = () => {
       )
       .to(enteringPage, { y: 0, rotate: 0, scale: 1 }, "<")
       .call(() => {
+        // Commit the new active page after the timeline completes.
         setActivePath(nextPage);
+
+        // If user navigated again mid-animation, immediately run next transition.
         if (queuedPathRef.current) {
           setTransition({ path: queuedPathRef.current, scrollY: 0 });
           queuedPathRef.current = null;
         } else {
+          // No pending navigation, so clear transition state.
           setTransition(null);
           isTransitioningRef.current = false;
         }
