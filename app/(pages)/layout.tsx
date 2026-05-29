@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 
 // Types
 import type { Page, Transition } from "@/components/global/types";
@@ -32,16 +32,27 @@ const SlugLayout = () => {
   const isMobile = useMediaQuery("(max-width: 1023px)");
 
   // States
-  const [activePage, setActivePage] = useState(pathname);
+  const [activePath, setActivePath] = useState(pathname);
   const [transition, setTransition] = useState<Transition>(null);
 
   const transitioningPage = transition?.path ?? null;
   const scrollOffset = transition?.scrollY ?? 0;
 
+  // Refs
+  const isTransitioningRef = useRef(false);
+  const queuedPathRef = useRef<string | null>(null);
+
   // Effects
   useEffect(() => {
     const navigate = () => {
-      if (pathname === activePage || transition?.path === pathname) return;
+      if (pathname === activePath || transition?.path === pathname) return;
+
+      if (isTransitioningRef.current) {
+        queuedPathRef.current = pathname;
+        return;
+      }
+
+      isTransitioningRef.current = true;
       const scrollY = window.scrollY;
       setTransition({ path: pathname, scrollY });
     };
@@ -89,13 +100,19 @@ const SlugLayout = () => {
       )
       .to(enteringPage, { y: 0, rotate: 0, scale: 1 }, "<")
       .call(() => {
-        setActivePage(nextPage);
-        setTransition(null);
+        setActivePath(nextPage);
+        if (queuedPathRef.current) {
+          setTransition({ path: queuedPathRef.current, scrollY: 0 });
+          queuedPathRef.current = null;
+        } else {
+          setTransition(null);
+          isTransitioningRef.current = false;
+        }
       });
   }, [transitioningPage]);
 
   // Render
-  const renderedPages = [...new Set([activePage, transitioningPage])].filter(
+  const renderedPages = [...new Set([activePath, transitioningPage])].filter(
     (page): page is Page => Boolean(page),
   );
 
@@ -116,7 +133,7 @@ const SlugLayout = () => {
           {renderedPages.map((pagePath) => {
             const page = PAGE_DATA[pagePath];
 
-            const isActive = pagePath === activePage;
+            const isActive = pagePath === activePath;
             const isTransitioning = pagePath === transitioningPage;
             const Component = page?.content ?? NotFound;
 
