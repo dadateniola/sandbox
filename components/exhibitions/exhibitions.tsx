@@ -5,7 +5,7 @@ import { ArrowDownLong } from "../svg/svg";
 
 // Imports
 import { EXHIBITIONS } from "./data";
-import { ExhibitionCard } from "../global/components";
+import { ExhibitionCard } from "./components";
 
 const Exhibitions = () => {
   return (

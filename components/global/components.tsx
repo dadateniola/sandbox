@@ -1,21 +1,10 @@
-import Link from "next/link";
-import Image from "next/image";
+import React from "react";
 
 // Types
-import type {
-  CTAProps,
-  HomeSectionProps,
-  PageWrapperProps,
-  ProjectCardProps,
-  ExhibitionCardProps,
-} from "./types";
-
-// Images
-import { ArrowRight, ArrowTopRight } from "../svg/svg";
+import type { CTAProps, PageWrapperProps } from "./types";
 
 // Imports
 import { cn } from "@/utils/cn";
-import React from "react";
 
 // Components
 export const PageLoader: React.FC = () => (
@@ -121,126 +110,5 @@ export const CTA: React.FC<CTAProps> = ({
       className="rounded-full border border-border-primary"
       style={{ width: size, height: size }}
     ></div>
-  </div>
-);
-
-export const HomeSection: React.FC<HomeSectionProps> = ({
-  href,
-  title,
-  children,
-}) => (
-  <section id={title.split(" ").join("-").toLowerCase()}>
-    <div className="custom-flex-col gap-32">
-      <div className="flex items-center justify-between gap-10">
-        <h2 className="text-[min(6vw,100px)] leading-[110%] uppercase">
-          {title.split(" ").map((word, index) =>
-            index === title.split(" ").length - 1 ? (
-              <span key={index} className="text-text-primary capitalize">
-                {word}
-              </span>
-            ) : (
-              word + " "
-            ),
-          )}
-        </h2>
-
-        <Link href={href} className="flex items-center gap-3">
-          <p className="text-lg leading-[120%]">View All</p>
-          <ArrowRight />
-        </Link>
-      </div>
-
-      {children}
-    </div>
-  </section>
-);
-
-export const ProjectCard: React.FC<ProjectCardProps> = ({
-  image,
-  title,
-  layout,
-}) => (
-  <div
-    className={cn(
-      "custom-flex-col gap-2.5",
-      layout?.centered && "justify-center",
-    )}
-    style={{
-      gridRow: layout?.rows ? `span ${layout.rows}` : "span 1",
-      gridColumn: layout?.cols ? `span ${layout.cols}` : "span 1",
-    }}
-  >
-    <p className="text-3xl leading-[120%] uppercase">
-      {title.split(" ").map((word, index) =>
-        index === title.split(" ").length - 1 ? (
-          <span key={index} className="text-text-primary capitalize">
-            {word}
-          </span>
-        ) : (
-          word + " "
-        ),
-      )}
-    </p>
-
-    <Image src={image} alt={title} className="w-full h-auto object-cover" />
-
-    <p className="leading-[160%]">
-      New York <br />
-      October 2021
-    </p>
-  </div>
-);
-
-export const ExhibitionCard: React.FC<ExhibitionCardProps> = ({
-  date,
-  image,
-  title,
-  description,
-}) => (
-  <div className="flex items-center justify-between gap-12">
-    <div className="flex items-center gap-12">
-      <div className="relative size-57.5 overflow-hidden">
-        <Image
-          src={image}
-          alt={title}
-          fill
-          sizes="400px"
-          className="object-cover"
-        />
-      </div>
-
-      <div className="custom-flex-col gap-5">
-        <div className="custom-flex-col gap-2">
-          <p className="leading-[160%]">New York — Town Hall — 2022</p>
-
-          <p className="text-[40px] leading-[110%] uppercase">
-            {title.split(" ").map((word, index) =>
-              index === title.split(" ").length - 1 ? (
-                <span key={index} className="text-text-primary capitalize">
-                  {word}
-                </span>
-              ) : (
-                word + " "
-              ),
-            )}
-          </p>
-        </div>
-
-        <p className="max-w-[40vw] leading-[160%]">{description}</p>
-      </div>
-    </div>
-
-    <div className="flex items-center gap-3 text-text-primary">
-      <p className="text-lg leading-[120%] whitespace-nowrap">Buy Ticket</p>
-
-      <ArrowTopRight />
-    </div>
-
-    <div className="flex flex-col items-end text-text-primary">
-      <p className="text-3xl capitalize leading-[110%]">{date.month}</p>
-      <p className="text-[min(6vw,100px)] leading-[110%]">
-        {String(date.day).padStart(2, "0")}
-      </p>
-    </div>
   </div>
 );

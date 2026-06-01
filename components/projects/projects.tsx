@@ -2,7 +2,8 @@ import Link from "next/link";
 
 // Imports
 import { PROJECTS_GRID } from "./data";
-import { CTA, ProjectCard } from "../global/components";
+import { CTA } from "../global/components";
+import { ProjectCard } from "./components";
 
 const Projects = () => {
   return (

@@ -11,14 +11,11 @@ import Vinogradov from "@/public/images/vinogradov.png";
 import { cn } from "@/utils/cn";
 import { HOME_PROJECTS_GRID, SERVICES } from "./data";
 
-import {
-  CTA,
-  HomeSection,
-  ProjectCard,
-  ExhibitionCard,
-} from "../global/components";
-
+import { CTA } from "../global/components";
+import { HomeSection } from "./components";
 import { EXHIBITIONS } from "../exhibitions/data";
+import { ProjectCard } from "../projects/components";
+import { ExhibitionCard } from "../exhibitions/components";
 
 const Home = () => {
   return (

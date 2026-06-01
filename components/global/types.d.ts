@@ -1,14 +1,23 @@
-import { StaticImageData } from "next/image";
-
 // Imports
 import { PAGES } from "./data";
 
+export type GlobalContextType = {
+  menuState: MenuState;
+  routeState: RouteState;
+  isTransitioningRef: React.MutableRefObject<boolean>;
+  queuedPathRef: React.MutableRefObject<string | null>;
+  navbarExpandedRef: React.MutableRefObject<HTMLDivElement | null>;
+
+  setMenuState: React.Dispatch<React.SetStateAction<MenuState>>;
+  setRouteState: React.Dispatch<React.SetStateAction<RouteState>>;
+};
+
 export type Page = (typeof PAGES)[number];
 
-export type Transition = {
-  path: string;
-  scrollY: number;
-} | null;
+export type RouteState = {
+  active: string;
+  transitioning: { path: string; scrollY: number } | null;
+};
 
 export type MenuState = "open" | "opening" | "closing" | "closed" | "hijacked";
 
@@ -24,23 +33,4 @@ export interface CTAProps {
   className?: string;
   children: React.ReactNode;
   style?: React.CSSProperties;
-}
-
-export interface HomeSectionProps {
-  href: string;
-  title: string;
-  children: React.ReactNode;
-}
-
-export interface ProjectCardProps {
-  title: string;
-  image: StaticImageData;
-  layout?: { cols?: number; rows?: number; centered?: boolean };
-}
-
-export interface ExhibitionCardProps {
-  title: string;
-  description: string;
-  image: StaticImageData;
-  date: { month: string; day: number };
 }
