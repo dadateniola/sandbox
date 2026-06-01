@@ -1,5 +1,5 @@
 // Types
-import type { ProjectCardProps } from "../global/types";
+import type { ProjectCardProps } from "../projects/types";
 
 // Imports
 import { PROJECTS_DATA } from "../projects/data";

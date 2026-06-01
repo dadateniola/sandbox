@@ -1,5 +1,5 @@
 // Types
-import { ExhibitionCardProps } from "../global/types";
+import type { ExhibitionCardProps } from "./types";
 
 // Images
 import Eve from "@/public/images/eve.png";

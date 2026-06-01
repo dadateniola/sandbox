@@ -1,5 +1,5 @@
 // Types
-import type { ProjectCardProps } from "../global/types";
+import type { Project, ProjectCardProps } from "./types";
 
 // Images
 import Ilona from "@/public/images/ilona.png";
@@ -9,7 +9,6 @@ import Mathilde from "@/public/images/mathilde.png";
 import BeSilent from "@/public/images/be-silent.png";
 import Wilkerson from "@/public/images/wilkerson.png";
 import Vinogradov from "@/public/images/vinogradov.png";
-import { Project } from "./types";
 
 // Constants
 export const PROJECTS = [
