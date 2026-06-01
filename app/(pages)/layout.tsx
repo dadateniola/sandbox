@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useLayoutEffect } from "react";
 
 // Types
 import type {
@@ -110,7 +110,7 @@ const SlugLayout = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (viewportState.mode === "static") {
       window.scrollTo(0, viewportState.scrollY);
     }
