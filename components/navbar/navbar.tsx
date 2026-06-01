@@ -6,15 +6,22 @@ import Link from "next/link";
 import gsap from "gsap";
 import { cn } from "@/utils/cn";
 import { useGSAP } from "@gsap/react";
-import { TL_DEFAULTS } from "../global/data";
 import NavbarExpanded from "./navbar-expanded";
 import { PageWrapper } from "../global/components";
+import { CLIP_PATHS, TL_DEFAULTS } from "../global/data";
 import { useGlobalContext } from "../global/GlobalContext";
 
 const Navbar = () => {
   // Hooks
-  const { menuState, navbarExpandedRef, isTransitioningRef, setMenuState } =
-    useGlobalContext();
+  const {
+    menuState,
+    routeState,
+    navbarExpandedRef,
+    isTransitioningRef,
+    setMenuState,
+    commitNavigation,
+    createTransition,
+  } = useGlobalContext();
 
   // Functions
   const handleMenuToggle = () => {
@@ -40,32 +47,39 @@ const Navbar = () => {
     const tl = gsap.timeline({ defaults: TL_DEFAULTS });
 
     if (menuState === "opening") {
-      tl.set(neContent, {
+      tl.set(ne, {
+        clipPath: CLIP_PATHS.closed,
+        autoAlpha: 1,
+        pointerEvents: "auto",
+      });
+
+      tl.from(neContent, {
         y: -window.innerHeight / 2,
         rotate: -7,
         scale: 1.3,
       })
-        .set(neOverlay, { autoAlpha: 1 })
-        .set(ne, {
-          clipPath: "polygon(0 0, 100% 0, 100% 0%, 0% 0%)",
-          autoAlpha: 1,
-          pointerEvents: "auto",
-        });
-
-      tl.to(neContent, { y: 0, rotate: 0, scale: 1 })
-        .to(neOverlay, { autoAlpha: 0 }, "<")
-        .to(ne, { clipPath: "polygon(0 0, 100% 0, 100% 110%, 0% 100%)" }, "<")
+        .from(neOverlay, { autoAlpha: 1 }, "<")
+        .to(ne, { clipPath: CLIP_PATHS.open }, "<")
         .to(ap, { y: window.innerHeight / 2, rotate: 7, scale: 1.3 }, "<")
-        .call(() => setMenuState("open"));
+        .call(() => {
+          setMenuState("open");
+          commitNavigation(routeState.active);
+        });
     } else if (menuState === "closing") {
-      tl.to(neContent, { y: -window.innerHeight / 2, rotate: -7, scale: 1.3 })
-        .to(neOverlay, { autoAlpha: 1 }, "<")
-        .to(ne, { clipPath: "polygon(0 0, 100% 0, 100% 0%, 0% 0%)" }, "<")
-        .to(ap, { y: 0, rotate: 0, scale: 1 }, "<");
-
-      tl.set(ne, { autoAlpha: 0, pointerEvents: "none" }).call(() =>
-        setMenuState("closed"),
+      tl.add(
+        createTransition({
+          exiting: ne,
+          entering: ap,
+          options: { skipEntering: true },
+        }),
       );
+
+      tl.to(ap, { y: 0, rotate: 0, scale: 1 }, "<")
+        .set(ne, { autoAlpha: 0, pointerEvents: "none" })
+        .call(() => {
+          setMenuState("closed");
+          commitNavigation(routeState.active);
+        });
     }
   }, [menuState]);
 

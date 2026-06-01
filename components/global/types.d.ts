@@ -8,8 +8,10 @@ export type GlobalContextType = {
   queuedPathRef: React.MutableRefObject<string | null>;
   navbarExpandedRef: React.MutableRefObject<HTMLDivElement | null>;
 
+  commitNavigation: (nextPage: string) => void;
   setMenuState: React.Dispatch<React.SetStateAction<MenuState>>;
   setRouteState: React.Dispatch<React.SetStateAction<RouteState>>;
+  createTransition: (args: CreateTransitionArgs) => gsap.core.Timeline;
 };
 
 export type Page = (typeof PAGES)[number];
@@ -20,6 +22,14 @@ export type RouteState = {
 };
 
 export type MenuState = "open" | "opening" | "closing" | "closed" | "hijacked";
+
+export type CreateTransitionArgs = {
+  exiting: Element;
+  entering: Element;
+  options?: {
+    skipEntering?: boolean;
+  };
+};
 
 export interface PageWrapperProps {
   className?: string;

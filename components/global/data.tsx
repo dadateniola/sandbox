@@ -43,3 +43,8 @@ export const PAGE_DATA: Record<
   "/about": { label: "About", content: About },
   "/contact": { label: "Contact", content: Contact },
 };
+
+export const CLIP_PATHS = {
+  open: "polygon(0 0, 100% 0, 100% 120%, 0% 100%)",
+  closed: "polygon(0 0, 100% 0, 100% 0%, 0% 0%)",
+};

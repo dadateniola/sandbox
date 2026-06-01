@@ -4,13 +4,19 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 // Types
-import type { MenuState, RouteState } from "@/components/global/types";
+import type {
+  MenuState,
+  RouteState,
+  CreateTransitionArgs,
+} from "@/components/global/types";
 
 // Imports
+import gsap from "gsap";
 import Pages from "@/components/global/pages";
 import Navbar from "@/components/navbar/navbar";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { GlobalContext } from "@/components/global/GlobalContext";
+import { CLIP_PATHS, TL_DEFAULTS } from "@/components/global/data";
 import { PageLoader, PageMobile } from "@/components/global/components";
 
 const SlugLayout = () => {
@@ -32,6 +38,48 @@ const SlugLayout = () => {
   const isTransitioningRef = useRef(false);
   const queuedPathRef = useRef<string | null>(null);
   const navbarExpandedRef = useRef<HTMLDivElement>(null);
+
+  // Functions
+  const createTransition = ({
+    exiting,
+    entering,
+    options,
+  }: CreateTransitionArgs) => {
+    const exContent = exiting.querySelector("[data-content]");
+    const exOverlay = exiting.querySelector("[data-overlay]");
+
+    const tl = gsap.timeline({ defaults: TL_DEFAULTS });
+
+    tl.set(exiting, { clipPath: CLIP_PATHS.open });
+
+    tl.to(exContent, { y: -window.innerHeight, rotate: -7, scale: 1.3 })
+      .to(exOverlay, { autoAlpha: 1 }, "<")
+      .to(exiting, { clipPath: CLIP_PATHS.closed }, "<");
+
+    if (!options?.skipEntering) {
+      tl.from(entering, { y: window.innerHeight, rotate: 7, scale: 1.3 }, "<");
+    }
+
+    return tl;
+  };
+
+  const commitNavigation = (nextPage: string) => {
+    setRouteState(() => {
+      if (queuedPathRef.current) {
+        const queuedPath = queuedPathRef.current;
+        queuedPathRef.current = null;
+        isTransitioningRef.current = true;
+
+        return {
+          active: nextPage,
+          transitioning: { path: queuedPath, scrollY: 0 },
+        };
+      }
+
+      isTransitioningRef.current = false;
+      return { active: nextPage, transitioning: null };
+    });
+  };
 
   // Effects
   useEffect(() => {
@@ -68,6 +116,8 @@ const SlugLayout = () => {
         isTransitioningRef,
         setMenuState,
         setRouteState,
+        commitNavigation,
+        createTransition,
       }}
     >
       {/* Loading State */}
