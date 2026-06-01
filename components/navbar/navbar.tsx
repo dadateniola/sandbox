@@ -7,7 +7,7 @@ import gsap from "gsap";
 import { cn } from "@/utils/cn";
 import { useGSAP } from "@gsap/react";
 import NavbarExpanded from "./navbar-expanded";
-import { PageWrapper } from "../global/components";
+import PageWrapper from "../global/page-wrapper";
 import { CLIP_PATHS, TL_DEFAULTS } from "../global/data";
 import { useGlobalContext } from "../global/GlobalContext";
 
@@ -21,6 +21,7 @@ const Navbar = () => {
     setMenuState,
     commitNavigation,
     createTransition,
+    setViewportState,
   } = useGlobalContext();
 
   // Functions
@@ -28,6 +29,7 @@ const Navbar = () => {
     const isTransitioning = menuState === "opening" || menuState === "closing";
     if (isTransitioning || isTransitioningRef.current) return;
 
+    setViewportState(prev => ({ mode: "fixed", scrollY: window.scrollY || prev.scrollY }));
     setMenuState((prev) =>
       prev === "closed" ? "opening" : prev === "open" ? "closing" : prev,
     );
@@ -73,7 +75,10 @@ const Navbar = () => {
 
       tl.to(ap, { y: 0, rotate: 0, scale: 1 }, "<")
         .set(ne, { autoAlpha: 0, pointerEvents: "none" })
-        .call(() => setMenuState("closed"));
+        .call(() => {
+          setViewportState((prev) => ({ ...prev, mode: "static" }));
+          setMenuState("closed");
+        });
     }
 
     tl.call(() => {

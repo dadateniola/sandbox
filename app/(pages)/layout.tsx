@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from "react";
 import type {
   MenuState,
   RouteState,
+  ViewportState,
   CreateTransitionArgs,
 } from "@/components/global/types";
 
@@ -14,15 +15,13 @@ import type {
 import gsap from "gsap";
 import Pages from "@/components/global/pages";
 import Navbar from "@/components/navbar/navbar";
-import { useMediaQuery } from "@/hooks/useMediaQuery";
+import PageInit from "@/components/global/page-init";
 import { GlobalContext } from "@/components/global/GlobalContext";
 import { CLIP_PATHS, TL_DEFAULTS } from "@/components/global/data";
-import { PageLoader, PageMobile } from "@/components/global/components";
 
 const SlugLayout = () => {
   // Hooks
   const pathname = usePathname();
-  const isMobile = useMediaQuery("(max-width: 1023px)");
 
   // States
   const [routeState, setRouteState] = useState<RouteState>({
@@ -30,9 +29,13 @@ const SlugLayout = () => {
     transitioning: null,
   });
   const [menuState, setMenuState] = useState<MenuState>("closed");
+  const [viewportState, setViewportState] = useState<ViewportState>({
+    mode: "static",
+    scrollY: 0,
+  });
 
   const activePath = routeState.active;
-  const transitioningPath = routeState.transitioning?.path ?? null;
+  const transitioningPath = routeState.transitioning;
 
   // Refs
   const isTransitioningRef = useRef(false);
@@ -52,12 +55,16 @@ const SlugLayout = () => {
 
     tl.set(exiting, { clipPath: CLIP_PATHS.open });
 
-    tl.to(exContent, { y: -window.innerHeight, rotate: -7, scale: 1.3 })
+    tl.to(exContent, { y: -window.innerHeight / 2, rotate: -7, scale: 1.3 })
       .to(exOverlay, { autoAlpha: 1 }, "<")
       .to(exiting, { clipPath: CLIP_PATHS.closed }, "<");
 
     if (!options?.skipEntering) {
-      tl.from(entering, { y: window.innerHeight, rotate: 7, scale: 1.3 }, "<");
+      tl.from(
+        entering,
+        { y: window.innerHeight / 2, rotate: 7, scale: 1.3 },
+        "<",
+      );
     }
 
     return tl;
@@ -72,7 +79,7 @@ const SlugLayout = () => {
 
         return {
           active: nextPage,
-          transitioning: { path: queuedPath, scrollY: 0 },
+          transitioning: queuedPath,
         };
       }
 
@@ -84,21 +91,18 @@ const SlugLayout = () => {
   // Effects
   useEffect(() => {
     const navigate = () => {
-      // Ignore if we're already on this page or it's already queued as next.
       if (pathname === activePath || transitioningPath === pathname) return;
 
-      // If an animation is running, keep only the latest destination.
       if (isTransitioningRef.current) {
         queuedPathRef.current = pathname;
         return;
       }
 
-      // Start a new transition and remember the current scroll position.
       isTransitioningRef.current = true;
-      const scrollY = window.scrollY;
+      setViewportState({ mode: "fixed", scrollY: window.scrollY });
       setRouteState((prev) => ({
         active: prev.active,
-        transitioning: { path: pathname, scrollY },
+        transitioning: pathname,
       }));
     };
 
@@ -106,33 +110,32 @@ const SlugLayout = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 
+  useEffect(() => {
+    if (viewportState.mode === "static") {
+      window.scrollTo(0, viewportState.scrollY);
+    }
+  }, [viewportState]);
+
   return (
     <GlobalContext.Provider
       value={{
         menuState,
         routeState,
         queuedPathRef,
+        viewportState,
         navbarExpandedRef,
         isTransitioningRef,
         setMenuState,
         setRouteState,
         commitNavigation,
         createTransition,
+        setViewportState,
       }}
     >
-      {/* Loading State */}
-      {isMobile === undefined && <PageLoader />}
-
-      {isMobile ? (
-        // Mobile Layout
-        <PageMobile />
-      ) : (
-        // Desktop Layout
-        <>
-          <Navbar />
-          <Pages />
-        </>
-      )}
+      <PageInit>
+        <Navbar />
+        <Pages />
+      </PageInit>
     </GlobalContext.Provider>
   );
 };

@@ -7,7 +7,7 @@ import type { Page } from "./types";
 import gsap from "gsap";
 import { PAGE_DATA } from "./data";
 import { useGSAP } from "@gsap/react";
-import { PageWrapper } from "./components";
+import PageWrapper from "./page-wrapper";
 import NotFound from "../not-found/not-found";
 import { useGlobalContext } from "./GlobalContext";
 
@@ -20,11 +20,11 @@ const Pages = () => {
     setMenuState,
     commitNavigation,
     createTransition,
+    setViewportState,
   } = useGlobalContext();
 
   const activePath = routeState.active;
-  const transitioningPath = routeState.transitioning?.path ?? null;
-  const scrollOffset = routeState.transitioning?.scrollY ?? 0;
+  const transitioningPath = routeState.transitioning;
 
   // Animations
   useGSAP(() => {
@@ -49,13 +49,18 @@ const Pages = () => {
 
       tl.add(createTransition({ exiting: ne, entering }));
 
-      tl.call(() => setMenuState("closed"));
+      tl.call(() => {
+        setMenuState("closed");
+        setViewportState({ mode: "static", scrollY: 0 });
+      });
     } else {
       const exiting = document.querySelector(`[data-state="exiting"]`);
       const entering = document.querySelector(`[data-state="entering"]`);
       if (!exiting || !entering) return;
 
-      tl.add(createTransition({ exiting, entering }));
+      tl.add(createTransition({ exiting, entering })).call(() =>
+        setViewportState({ mode: "static", scrollY: 0 }),
+      );
     }
 
     tl.call(() => commitNavigation(nextPage));
@@ -87,7 +92,6 @@ const Pages = () => {
               ? "active"
               : "inactive"
         }
-        scrollOffset={scrollOffset}
       >
         <Component />
       </PageWrapper>
