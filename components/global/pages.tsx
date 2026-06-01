@@ -31,6 +31,8 @@ const Pages = () => {
     if (!transitioningPath) return;
     const nextPage = transitioningPath;
 
+    const tl = gsap.timeline();
+
     // If we're mid-menu-transition, we want to immediately jump to the new page without animating the navbar again.
     if (menuState === "open") {
       setMenuState("hijacked");
@@ -40,8 +42,6 @@ const Pages = () => {
       const entering = document.querySelector(`[data-state="entering"]`);
       if (!ne || !exiting || !entering) return;
 
-      const tl = gsap.timeline();
-
       tl.set(exiting, {
         autoAlpha: 0,
         pointerEvents: "none",
@@ -49,21 +49,16 @@ const Pages = () => {
 
       tl.add(createTransition({ exiting: ne, entering }));
 
-      tl.call(() => {
-        setMenuState("closed");
-        commitNavigation(nextPage);
-      });
+      tl.call(() => setMenuState("closed"));
     } else {
       const exiting = document.querySelector(`[data-state="exiting"]`);
       const entering = document.querySelector(`[data-state="entering"]`);
       if (!exiting || !entering) return;
 
-      const tl = gsap.timeline();
-
       tl.add(createTransition({ exiting, entering }));
-
-      tl.call(() => commitNavigation(nextPage));
     }
+
+    tl.call(() => commitNavigation(nextPage));
   }, [transitioningPath]);
 
   // Render

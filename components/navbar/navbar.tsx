@@ -61,10 +61,7 @@ const Navbar = () => {
         .from(neOverlay, { autoAlpha: 1 }, "<")
         .to(ne, { clipPath: CLIP_PATHS.open }, "<")
         .to(ap, { y: window.innerHeight / 2, rotate: 7, scale: 1.3 }, "<")
-        .call(() => {
-          setMenuState("open");
-          commitNavigation(routeState.active);
-        });
+        .call(() => setMenuState("open"));
     } else if (menuState === "closing") {
       tl.add(
         createTransition({
@@ -76,11 +73,12 @@ const Navbar = () => {
 
       tl.to(ap, { y: 0, rotate: 0, scale: 1 }, "<")
         .set(ne, { autoAlpha: 0, pointerEvents: "none" })
-        .call(() => {
-          setMenuState("closed");
-          commitNavigation(routeState.active);
-        });
+        .call(() => setMenuState("closed"));
     }
+
+    tl.call(() => {
+      commitNavigation(routeState.active);
+    });
   }, [menuState]);
 
   // Render
