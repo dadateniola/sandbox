@@ -1,42 +1,18 @@
 // Imports
 import { PAGES } from "./data";
+import type {
+  CreateTransitionArgs,
+  MenuState,
+  RouteState,
+  TransitionContextType,
+  ViewportState,
+} from "@/transition/transition-state";
 
-export type GlobalContextType = {
-  menuState: MenuState;
-  routeState: RouteState;
-  viewportState: ViewportState;
-  isTransitioningRef: React.MutableRefObject<boolean>;
-  queuedPathRef: React.MutableRefObject<string | null>;
-  navbarExpandedRef: React.MutableRefObject<HTMLDivElement | null>;
-
-  commitNavigation: (nextPage: string) => void;
-  setMenuState: React.Dispatch<React.SetStateAction<MenuState>>;
-  setRouteState: React.Dispatch<React.SetStateAction<RouteState>>;
-  createTransition: (args: CreateTransitionArgs) => gsap.core.Timeline;
-  setViewportState: React.Dispatch<React.SetStateAction<ViewportState>>;
-};
+export type GlobalContextType = TransitionContextType;
 
 export type Page = (typeof PAGES)[number];
 
-export type RouteState = {
-  active: string;
-  transitioning: string | null;
-};
-
-export type MenuState = "open" | "opening" | "closing" | "closed" | "hijacked";
-
-export type ViewportState = {
-  mode: "static" | "fixed";
-  scrollY: number;
-};
-
-export type CreateTransitionArgs = {
-  exiting: Element;
-  entering: Element;
-  options?: {
-    skipEntering?: boolean;
-  };
-};
+export type { RouteState, MenuState, ViewportState, CreateTransitionArgs };
 
 export interface PageInitProps {
   children: React.ReactNode;
