@@ -1,9 +1,19 @@
 "use client";
 
-import { createContext, useContext, useEffect, useLayoutEffect, useRef, useState } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import { usePathname } from "next/navigation";
 
-import { commitNavigation as commitNavigationAction, handlePathnameChange } from "./transition-actions";
+import {
+  commitNavigation as commitNavigationAction,
+  handlePathnameChange,
+} from "./transition-actions";
 import { createTransition } from "./create-transition";
 import {
   createInitialRouteState,
@@ -12,14 +22,22 @@ import {
   type TransitionContextType,
 } from "./transition-state";
 
-const GlobalContext = createContext<TransitionContextType | null>(null);
+const TransitionContext = createContext<TransitionContextType | null>(null);
 
-export const TransitionProvider = ({ children }: { children: React.ReactNode }) => {
+export const TransitionProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
   const pathname = usePathname();
 
-  const [routeState, setRouteState] = useState(() => createInitialRouteState(pathname));
+  const [routeState, setRouteState] = useState(() =>
+    createInitialRouteState(pathname),
+  );
   const [menuState, setMenuState] = useState<MenuState>("closed");
-  const [viewportState, setViewportState] = useState(createInitialViewportState);
+  const [viewportState, setViewportState] = useState(
+    createInitialViewportState,
+  );
 
   const activePath = routeState.active;
   const transitioningPath = routeState.transitioning;
@@ -56,7 +74,7 @@ export const TransitionProvider = ({ children }: { children: React.ReactNode }) 
   }, [viewportState]);
 
   return (
-    <GlobalContext.Provider
+    <TransitionContext.Provider
       value={{
         menuState,
         routeState,
@@ -72,16 +90,18 @@ export const TransitionProvider = ({ children }: { children: React.ReactNode }) 
       }}
     >
       {children}
-    </GlobalContext.Provider>
+    </TransitionContext.Provider>
   );
 };
 
-export const useGlobalContext = () => {
-  const context = useContext(GlobalContext);
+export const useTransitionContext = () => {
+  const context = useContext(TransitionContext);
   if (!context) {
-    throw new Error("useGlobalContext must be used within a GlobalProvider");
+    throw new Error(
+      "useTransitionContext must be used within a TransitionProvider",
+    );
   }
   return context;
 };
 
-export { GlobalContext };
+export { TransitionContext };

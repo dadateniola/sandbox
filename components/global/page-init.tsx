@@ -11,13 +11,13 @@ import { cn } from "@/utils/cn";
 import { useGSAP } from "@gsap/react";
 import PageWrapper from "./page-wrapper";
 import { PageMobile } from "./components";
-import { useGlobalContext } from "./GlobalContext";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
+import { useTransitionContext } from "@/transition/TransitionProvider";
 
 const PageInit: React.FC<PageInitProps> = ({ children }) => {
   // Hooks
   const isMobile = useMediaQuery("(max-width: 1023px)");
-  const { createTransition, setViewportState } = useGlobalContext();
+  const { createTransition, setViewportState } = useTransitionContext();
 
   // States
   const [isAnimating, setIsAnimating] = useState(true);

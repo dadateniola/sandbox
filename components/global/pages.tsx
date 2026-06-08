@@ -9,7 +9,7 @@ import { PAGE_DATA } from "./data";
 import { useGSAP } from "@gsap/react";
 import PageWrapper from "./page-wrapper";
 import NotFound from "../not-found/not-found";
-import { useGlobalContext } from "./GlobalContext";
+import { useTransitionContext } from "@/transition/TransitionProvider";
 
 const Pages = () => {
   // Hooks
@@ -21,7 +21,7 @@ const Pages = () => {
     commitNavigation,
     createTransition,
     setViewportState,
-  } = useGlobalContext();
+  } = useTransitionContext();
 
   const activePath = routeState.active;
   const transitioningPath = routeState.transitioning;

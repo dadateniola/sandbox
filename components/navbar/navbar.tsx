@@ -9,7 +9,7 @@ import { useGSAP } from "@gsap/react";
 import NavbarExpanded from "./navbar-expanded";
 import PageWrapper from "../global/page-wrapper";
 import { CLIP_PATHS, TL_DEFAULTS } from "../global/data";
-import { useGlobalContext } from "../global/GlobalContext";
+import { useTransitionContext } from "@/transition/TransitionProvider";
 
 const Navbar = () => {
   // Hooks
@@ -22,14 +22,17 @@ const Navbar = () => {
     commitNavigation,
     createTransition,
     setViewportState,
-  } = useGlobalContext();
+  } = useTransitionContext();
 
   // Functions
   const handleMenuToggle = () => {
     const isTransitioning = menuState === "opening" || menuState === "closing";
     if (isTransitioning || isTransitioningRef.current) return;
 
-    setViewportState(prev => ({ mode: "fixed", scrollY: window.scrollY || prev.scrollY }));
+    setViewportState((prev) => ({
+      mode: "fixed",
+      scrollY: window.scrollY || prev.scrollY,
+    }));
     setMenuState((prev) =>
       prev === "closed" ? "opening" : prev === "open" ? "closing" : prev,
     );

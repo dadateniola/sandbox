@@ -8,7 +8,7 @@ import type {
   ViewportState,
 } from "@/transition/transition-state";
 
-export type GlobalContextType = TransitionContextType;
+export type TransitionContextValue = TransitionContextType;
 
 export type Page = (typeof PAGES)[number];
 

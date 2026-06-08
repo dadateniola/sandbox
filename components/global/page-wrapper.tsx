@@ -7,14 +7,14 @@ import type { PageWrapperProps } from "./types";
 
 // Imports
 import { cn } from "@/utils/cn";
-import { useGlobalContext } from "./GlobalContext";
+import { useTransitionContext } from "@/transition/TransitionProvider";
 
 const PageWrapper = React.forwardRef<HTMLDivElement, PageWrapperProps>(
   ({ state, children, className, ...props }, ref) => {
     // Hooks
     const {
       viewportState: { mode, scrollY },
-    } = useGlobalContext();
+    } = useTransitionContext();
 
     const shouldBeFixed = mode === "fixed";
     const ownsScrollOffset =
