@@ -1,142 +1,69 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState, useLayoutEffect } from "react";
 
 // Types
-import type {
-  MenuState,
-  RouteState,
-  ViewportState,
-  CreateTransitionArgs,
-} from "@/components/global/types";
+import type { Page } from "@/components/global/types";
 
 // Imports
-import gsap from "gsap";
-import Pages from "@/components/global/pages";
+import { cn } from "@/utils/cn";
 import Navbar from "@/components/navbar/navbar";
-import PageInit from "@/components/global/page-init";
-import { GlobalContext } from "@/components/global/GlobalContext";
-import { CLIP_PATHS, TL_DEFAULTS } from "@/components/global/data";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
+import NotFound from "@/components/not-found/not-found";
+import { PageMobile } from "@/components/global/components";
+import { PAGE_DATA, PAGES } from "@/components/global/data";
 
 const SlugLayout = () => {
   // Hooks
   const pathname = usePathname();
+  const isMobile = useMediaQuery("(max-width: 1023px)");
 
   // States
-  const [routeState, setRouteState] = useState<RouteState>({
-    active: pathname,
-    transitioning: null,
-  });
-  const [menuState, setMenuState] = useState<MenuState>("closed");
-  const [viewportState, setViewportState] = useState<ViewportState>({
-    mode: "static",
-    scrollY: 0,
-  });
-
-  const activePath = routeState.active;
-  const transitioningPath = routeState.transitioning;
-
-  // Refs
-  const isTransitioningRef = useRef(false);
-  const queuedPathRef = useRef<string | null>(null);
-  const navbarExpandedRef = useRef<HTMLDivElement>(null);
-
-  // Functions
-  const createTransition = ({
-    exiting,
-    entering,
-    options,
-  }: CreateTransitionArgs) => {
-    const exContent = exiting.querySelector("[data-content]");
-    const exOverlay = exiting.querySelector("[data-overlay]");
-
-    const tl = gsap.timeline({ defaults: TL_DEFAULTS });
-
-    tl.set(exiting, { clipPath: CLIP_PATHS.open });
-
-    tl.to(exContent, { y: -window.innerHeight / 2, rotate: -7, scale: 1.3 })
-      .to(exOverlay, { autoAlpha: 1 }, "<")
-      .to(exiting, { clipPath: CLIP_PATHS.closed }, "<");
-
-    if (!options?.skipEntering) {
-      tl.from(
-        entering,
-        { y: window.innerHeight / 2, rotate: 7, scale: 1.3 },
-        "<",
-      );
-    }
-
-    return tl;
-  };
-
-  const commitNavigation = (nextPage: string) => {
-    setRouteState(() => {
-      if (queuedPathRef.current) {
-        const queuedPath = queuedPathRef.current;
-        queuedPathRef.current = null;
-        isTransitioningRef.current = true;
-
-        return {
-          active: nextPage,
-          transitioning: queuedPath,
-        };
-      }
-
-      isTransitioningRef.current = false;
-      return { active: nextPage, transitioning: null };
-    });
-  };
+  const [currentPath, setCurrentPath] = useState(pathname);
 
   // Effects
   useEffect(() => {
-    const navigate = () => {
-      if (pathname === activePath || transitioningPath === pathname) return;
-
-      if (isTransitioningRef.current) {
-        queuedPathRef.current = pathname;
-        return;
-      }
-
-      isTransitioningRef.current = true;
-      setViewportState({ mode: "fixed", scrollY: window.scrollY });
-      setRouteState((prev) => ({
-        active: prev.active,
-        transitioning: pathname,
-      }));
-    };
-
-    navigate();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const changePath = () => setCurrentPath(pathname);
+    changePath();
   }, [pathname]);
 
-  useLayoutEffect(() => {
-    if (viewportState.mode === "static") {
-      window.scrollTo(0, viewportState.scrollY);
-    }
-  }, [viewportState]);
+  const isKnownPath = PAGES.includes(currentPath as Page);
+  const ActiveComponent = isKnownPath
+    ? PAGE_DATA[currentPath as Page].content
+    : NotFound;
+
+  const shouldShowLoader = isMobile === undefined;
+  const shouldShowMobileLayout = isMobile === true;
 
   return (
-    <GlobalContext.Provider
-      value={{
-        menuState,
-        routeState,
-        queuedPathRef,
-        viewportState,
-        navbarExpandedRef,
-        isTransitioningRef,
-        setMenuState,
-        setRouteState,
-        commitNavigation,
-        createTransition,
-        setViewportState,
-      }}
-    >
-      <PageInit>
-        <Navbar />
-        <Pages />
-      </PageInit>
-    </GlobalContext.Provider>
+    <>
+      {shouldShowLoader && (
+        <div className="fixed z-10 inset-0 custom-flex-center bg-background overflow-hidden">
+          <div
+            className={cn(
+              "custom-flex-col gap-5",
+              "text-text-primary text-3xl text-center leading-[90%] tracking-[-0.6px] uppercase",
+            )}
+          >
+            <p>Jacob</p>
+            <p>Grønberg</p>
+          </div>
+        </div>
+      )}
+
+      {shouldShowMobileLayout ? (
+        <PageMobile />
+      ) : (
+        <>
+          <Navbar className="z-6" />
+
+          <main className="relative z-1 px-4 lg:px-15 xl:px-35 overflow-hidden">
+            <ActiveComponent />
+          </main>
+        </>
+      )}
+    </>
   );
 };
 
