@@ -16,6 +16,13 @@ export type TransitionEvent =
       scrollY: number;
     }
   | {
+      type: "HIDE_LOADER";
+    }
+  | {
+      type: "SET_MOBILE_VIEWPORT";
+      isMobile: boolean;
+    }
+  | {
       type: "CLEANUP";
       state: Partial<TransitionState> | null;
     };

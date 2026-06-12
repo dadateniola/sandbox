@@ -31,6 +31,8 @@ export type TransitionState = {
   cleanup: Partial<
     Omit<TransitionState, "phase" | "request" | "cleanup">
   > | null;
+  isLoaderVisible: boolean;
+  isMobileViewport: boolean;
 };
 
 export type TransitionContextType = {

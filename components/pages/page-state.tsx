@@ -7,7 +7,13 @@ import type { PageStateProps } from "./types";
 import { cn } from "@/utils/cn";
 import { useTransitionEngine } from "@/transition/engine/TransitionContext";
 
-const PageState: React.FC<PageStateProps> = ({ children, stageState }) => {
+const PageState: React.FC<PageStateProps> = ({
+  role,
+  children,
+  className,
+  stageState,
+  ...props
+}) => {
   // Hooks
   const {
     state: { viewport },
@@ -20,8 +26,7 @@ const PageState: React.FC<PageStateProps> = ({ children, stageState }) => {
 
   return (
     <div
-      data-transition-role="page-stage"
-      data-stage-state={stageState}
+      data-transition-role={role}
       className={cn(
         "w-full h-screen",
         shouldFixViewport ? "fixed" : "relative",
@@ -29,7 +34,9 @@ const PageState: React.FC<PageStateProps> = ({ children, stageState }) => {
           "z-2": stageState === "exiting",
           "z-1": stageState === "entering",
         },
+        className,
       )}
+      {...props}
     >
       <div
         data-transition-role="overlay"

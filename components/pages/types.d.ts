@@ -6,6 +6,8 @@ export type PageStageState =
   | "fixed";
 
 export interface PageStateProps {
+  role: string;
+  className?: string;
   children: React.ReactNode;
   stageState: PageStageState;
 }

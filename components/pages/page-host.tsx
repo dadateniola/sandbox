@@ -21,10 +21,16 @@ const PageHost = () => {
   return (
     <>
       {renderedPaths.map((path) => {
-        const Component = PAGE_DATA[path].content ?? NotFound;
+        const stageState = selectStageState(state, path);
+        const Component = PAGE_DATA[path]?.content ?? NotFound;
 
         return (
-          <PageState key={path} stageState={selectStageState(state, path)}>
+          <PageState
+            key={path}
+            role="page-stage"
+            stageState={stageState}
+            data-stage-state={stageState}
+          >
             <Component />
           </PageState>
         );
