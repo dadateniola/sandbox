@@ -7,20 +7,6 @@ import type { CTAProps } from "./types";
 import { cn } from "@/utils/cn";
 
 // Components
-export const PageMobile: React.FC = () => (
-  <div className="w-full h-screen custom-flex-center">
-    <p className="text-text-primary text-lg font-medium text-center leading-[110%]">
-      This experience was designed for larger screens.
-      <br />
-      <br />
-      I didn&apos;t have the strength to make the mobile version yet 🙂
-      <br />
-      <br />
-      Please visit on a device wider than 1024px.
-    </p>
-  </div>
-);
-
 export const CTA: React.FC<CTAProps> = ({
   size,
   style,
