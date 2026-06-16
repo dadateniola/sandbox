@@ -33,7 +33,7 @@ export const registerDefaultTransitions = () => {
 
       const tl = createBaseTimeline();
 
-      if (menuState === "open") {
+      if (menuState === "open" || menuState === "closing") {
         tl.set(exiting, {
           autoAlpha: 0,
           pointerEvents: "none",

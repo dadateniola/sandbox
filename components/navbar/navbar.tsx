@@ -9,15 +9,12 @@ import { useTransitionEngine } from "@/transition/engine/TransitionContext";
 const Navbar = () => {
   // Hooks
   const {
-    state: { phase, menuState },
+    state: { menuState },
     dispatch,
   } = useTransitionEngine();
 
   // Functions
   const handleMenuToggle = () => {
-    const isTransitioning = menuState === "opening" || menuState === "closing";
-    if (isTransitioning || phase !== "idle") return;
-
     dispatch({
       type: menuState === "closed" ? "MENU_OPEN" : "MENU_CLOSE",
       scrollY: window.scrollY,

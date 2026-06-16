@@ -67,18 +67,3 @@ export const applyEnter = (
 
   return tl;
 };
-
-export const fadeIn = (tl: gsap.core.Timeline, element: HTMLElement | null) => {
-  if (!element) return tl;
-  tl.fromTo(element, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.45 });
-  return tl;
-};
-
-export const fadeOut = (
-  tl: gsap.core.Timeline,
-  element: HTMLElement | null,
-) => {
-  if (!element) return tl;
-  tl.to(element, { autoAlpha: 0, duration: 0.45 });
-  return tl;
-};

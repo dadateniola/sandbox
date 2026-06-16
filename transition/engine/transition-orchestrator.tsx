@@ -29,6 +29,16 @@ const TransitionOrchestrator = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.phase]);
 
+  useEffect(() => {
+    if (state.phase !== "idle" || !state.queuedPath) return;
+
+    dispatch({
+      type: "NAVIGATE",
+      to: state.queuedPath,
+      scrollY: window.scrollY,
+    });
+  }, [state.phase, state.queuedPath, dispatch]);
+
   return null;
 };
 

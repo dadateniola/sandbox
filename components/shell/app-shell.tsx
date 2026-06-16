@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect } from "react";
 import { usePathname } from "next/navigation";
+import { useEffect, useLayoutEffect } from "react";
 
 // Imports
 import Navbar from "../navbar/navbar";
@@ -17,8 +17,12 @@ import { registerDefaultTransitions } from "@/transition/registry/register-defau
 const AppShell = () => {
   // Hooks
   const pathname = usePathname();
-  const { state, dispatch } = useTransitionEngine();
   const isMobile = useMediaQuery("(max-width: 1023px)");
+
+  const {
+    state: { viewport },
+    dispatch,
+  } = useTransitionEngine();
 
   // Effects
   useEffect(() => {
@@ -31,15 +35,18 @@ const AppShell = () => {
   }, [isMobile, dispatch]);
 
   useEffect(() => {
-    if (pathname === state.activePath || pathname === state.pendingPath) return;
-
     dispatch({
       type: "NAVIGATE",
       to: pathname,
       scrollY: window.scrollY,
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pathname]);
+  }, [pathname, dispatch]);
+
+  useLayoutEffect(() => {
+    if (viewport.mode === "static") {
+      window.scrollTo(0, viewport.scrollY);
+    }
+  }, [viewport]);
 
   return (
     <>
