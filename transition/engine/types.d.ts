@@ -3,11 +3,7 @@ import { Dispatch } from "react";
 // Types
 import type { TransitionEvent, TransitionEventType } from "./events";
 
-export type TransitionPhase =
-  | "idle"
-  | "preparing"
-  | "animating"
-  | "cleaning up";
+export type TransitionPhase = "idle" | "animating";
 
 export type ViewportMode = "static" | "fixed";
 

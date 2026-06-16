@@ -11,7 +11,7 @@ const TransitionOrchestrator = () => {
 
   // Effects
   useEffect(() => {
-    if (state.phase !== "preparing") return;
+    if (state.phase !== "animating") return;
 
     const request = state.request;
 

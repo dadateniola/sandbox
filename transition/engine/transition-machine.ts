@@ -19,13 +19,13 @@ export const canProcessEvent = (
       return (
         state.menuState !== "opening" &&
         state.menuState !== "closing" &&
-        state.phase !== "preparing"
+        state.phase !== "animating"
       );
     case "MENU_CLOSE":
       return (
         state.menuState !== "opening" &&
         state.menuState !== "closing" &&
-        state.phase !== "preparing"
+        state.phase !== "animating"
       );
     default:
       return true;

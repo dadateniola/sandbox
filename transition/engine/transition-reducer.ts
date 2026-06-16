@@ -38,7 +38,7 @@ export const transitionReducer = (
 
       return {
         ...state,
-        phase: "preparing",
+        phase: "animating",
         pendingPath: event.to,
         menuState: state.menuState === "open" ? "closing" : state.menuState,
         viewport: { mode: "fixed", scrollY: event.scrollY },
@@ -54,7 +54,7 @@ export const transitionReducer = (
     case "MENU_OPEN": {
       return {
         ...state,
-        phase: "preparing",
+        phase: "animating",
         menuState: "opening",
         viewport: { mode: "fixed", scrollY: event.scrollY },
         request: { type: event.type },
@@ -64,7 +64,7 @@ export const transitionReducer = (
     case "MENU_CLOSE": {
       return {
         ...state,
-        phase: "preparing",
+        phase: "animating",
         menuState: "closing",
         viewport: { mode: "fixed", scrollY: state.viewport.scrollY },
         request: { type: event.type },
@@ -77,7 +77,7 @@ export const transitionReducer = (
     case "HIDE_LOADER": {
       return {
         ...state,
-        phase: "preparing",
+        phase: "animating",
         request: { type: event.type },
         cleanup: {
           isLoaderVisible: false,
