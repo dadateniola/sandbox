@@ -9,7 +9,7 @@ import { useTransitionEngine } from "@/transition/engine/TransitionContext";
 const Navbar = () => {
   // Hooks
   const {
-    state: { menuState },
+    state: { menuState, isMobileViewport },
     dispatch,
   } = useTransitionEngine();
 
@@ -26,9 +26,13 @@ const Navbar = () => {
 
   return (
     <nav className="fixed z-6 top-0 left-0 right-0 w-full pt-12.5 px-10 flex items-end justify-between gap-10">
-      <Link href="/not-found" className="text-2xl leading-[110%]">
-        Jacob Grönberg
-      </Link>
+      {isMobileViewport ? (
+        <div className="text-2xl leading-[110%]">Jacob Grönberg</div>
+      ) : (
+        <Link href="/not-found" className="text-2xl leading-[110%]">
+          Jacob Grönberg
+        </Link>
+      )}
 
       <button onClick={handleMenuToggle} className="relative group">
         <div
