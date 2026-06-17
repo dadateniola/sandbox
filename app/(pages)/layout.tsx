@@ -1,6 +1,6 @@
 // Imports
 import AppShell from "@/components/shell/app-shell";
-import TransitionProvider from "@/transition/engine/TransitionProvider";
+import { TransitionProvider } from "@/transition/engine/TransitionContext";
 
 const SlugLayout = () => {
   return (

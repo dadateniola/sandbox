@@ -12,7 +12,6 @@ import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { NavbarMenuPanel } from "../navbar/navbar-menu-panel";
 import { useTransitionEngine } from "@/transition/engine/TransitionContext";
 import TransitionOrchestrator from "@/transition/engine/transition-orchestrator";
-import { registerDefaultTransitions } from "@/transition/registry/register-default-transitions";
 
 const AppShell = () => {
   // Hooks
@@ -25,10 +24,6 @@ const AppShell = () => {
   } = useTransitionEngine();
 
   // Effects
-  useEffect(() => {
-    registerDefaultTransitions();
-  }, []);
-
   useEffect(() => {
     if (isMobile === undefined) return;
     dispatch({ type: "SET_MOBILE_VIEWPORT", isMobile });
