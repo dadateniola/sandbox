@@ -2,7 +2,7 @@
 
 // Imports
 import PageState from "./page-state";
-import { PAGE_DATA } from "../global/data";
+import { resolveRoute } from "../global/data";
 import NotFound from "../not-found/not-found";
 import { useTransitionEngine } from "@/transition/engine/TransitionContext";
 
@@ -22,7 +22,8 @@ const PageHost = () => {
     <>
       {renderedPaths.map((path) => {
         const stageState = selectStageState(state, path);
-        const Component = PAGE_DATA[path]?.content ?? NotFound;
+        const match = resolveRoute(path);
+        const Component = match?.route.content ?? NotFound;
 
         return (
           <PageState
@@ -31,7 +32,7 @@ const PageHost = () => {
             stageState={stageState}
             data-stage-state={stageState}
           >
-            <Component />
+            <Component {...match?.params} />
           </PageState>
         );
       })}

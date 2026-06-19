@@ -1,7 +1,16 @@
-// Imports
-import { PAGES } from "./data";
+export type RouteKey =
+  | "/"
+  | "/projects"
+  | "/projects/:projectId"
+  | "/exhibitions"
+  | "/about"
+  | "/contact";
 
-export type Page = (typeof PAGES)[number];
+export type RouteDefinition = {
+  path: RouteKey;
+  label: string;
+  content: (params?: Record<string, string>) => JSX.Element;
+};
 
 export interface CTAProps {
   size: number;

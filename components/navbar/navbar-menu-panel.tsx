@@ -3,12 +3,24 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+// Types
+import type { RouteKey } from "../global/types";
+
 // Imports
 import { cn } from "@/utils/cn";
+import { ROUTES } from "../global/data";
 import PageState from "../pages/page-state";
-import { PAGE_DATA, PAGES } from "../global/data";
 import { isActiveRoute } from "@/utils/isActiveRoute";
 import { useTransitionEngine } from "@/transition/engine/TransitionContext";
+
+// Constants
+const PAGES: RouteKey[] = [
+  "/",
+  "/projects",
+  "/exhibitions",
+  "/about",
+  "/contact",
+];
 
 export const NavbarMenuPanel = () => {
   const pathname = usePathname();
@@ -34,7 +46,9 @@ export const NavbarMenuPanel = () => {
         <div className="flex-1 min-h-0 custom-flex-center">
           <div className="flex flex-col items-center gap-[min(4vh,40px)]">
             {PAGES.map((page, index) => {
-              const { label } = PAGE_DATA[page];
+              const label = ROUTES.find((r) => r.path === page)?.label;
+              if (!label) return null;
+
               const Component = isMobileViewport ? "div" : Link;
 
               return (
