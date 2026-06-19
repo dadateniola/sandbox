@@ -1,3 +1,4 @@
+import Link from "next/link";
 import Image from "next/image";
 
 // Types
@@ -9,9 +10,10 @@ import { PROJECTS } from "./data";
 
 // Components
 export const ProjectCard: React.FC<ProjectCardProps> = ({
+  slug,
   span,
-  image,
   title,
+  coverImage,
 }) => (
   <div
     className={cn(
@@ -35,7 +37,16 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
       )}
     </p>
 
-    <Image src={image} alt={title} className="w-full h-auto object-cover" />
+    <Link href={`/projects/${slug}`} className="relative overflow-hidden group">
+      <Image
+        src={coverImage}
+        alt={title}
+        className={cn(
+          "w-full h-auto object-cover",
+          "group-hover:scale-105 transition-transform duration-500",
+        )}
+      />
+    </Link>
 
     <p className="leading-[160%]">
       New York <br />
@@ -61,14 +72,7 @@ export const ProjectGrid: React.FC<ProjectGridProps> = ({ layout }) => (
 
       const project = PROJECTS[item.slug];
 
-      return (
-        <ProjectCard
-          key={item.slug}
-          span={item.span}
-          title={project.title}
-          image={project.coverImage}
-        />
-      );
+      return <ProjectCard key={item.slug} span={item.span} {...project} />;
     })}
   </div>
 );

@@ -15,10 +15,8 @@ export type ProjectDefinition = {
   title: string;
   coverImage: StaticImageData;
 };
-export interface ProjectCardProps {
-  title: string;
+export interface ProjectCardProps extends ProjectDefinition {
   span?: GridItemSpan;
-  image: StaticImageData;
 }
 
 export interface ProjectGridProps {
