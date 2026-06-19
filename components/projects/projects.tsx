@@ -1,9 +1,9 @@
 import Link from "next/link";
 
 // Imports
-import { PROJECTS_GRID } from "./data";
+import { PROJECTS_LAYOUT } from "./data";
 import { CTA } from "../global/components";
-import { ProjectCard } from "./components";
+import { ProjectGrid } from "./components";
 
 const Projects = () => {
   return (
@@ -32,15 +32,7 @@ const Projects = () => {
 
       {/* Projects Section */}
       <section id="projects">
-        <div className="grid grid-cols-10 gap-y-30">
-          {PROJECTS_GRID.map((item, index) =>
-            typeof item === "number" ? (
-              <div key={index} style={{ gridColumn: `span ${item}` }} />
-            ) : (
-              <ProjectCard key={index} {...item} />
-            ),
-          )}
-        </div>
+        <ProjectGrid layout={PROJECTS_LAYOUT} />
       </section>
     </div>
   );

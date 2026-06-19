@@ -1,5 +1,6 @@
 // Types
-import type { Project, ProjectCardProps } from "./types";
+import type { GridLayout } from "../global/types";
+import type { ProjectDefinition, ProjectKey } from "./types";
 
 // Images
 import Ilona from "@/public/images/ilona.png";
@@ -11,82 +12,66 @@ import Wilkerson from "@/public/images/wilkerson.png";
 import Vinogradov from "@/public/images/vinogradov.png";
 
 // Constants
-export const PROJECTS = [
-  "dancing-in-black-and-white",
-  "style-and-fashion",
-  "one-eye",
-  "week-fashion",
-  "be-silent",
-  "cigarette-and-tobacco",
-  "wonderful-body",
-] as const;
-
-export const PROJECTS_DATA: Record<Project, ProjectCardProps> = {
+export const PROJECTS: Record<ProjectKey, ProjectDefinition> = {
   "dancing-in-black-and-white": {
+    slug: "dancing-in-black-and-white",
     title: "Dancing in Black & White",
-    image: Vinogradov,
+    coverImage: Vinogradov,
   },
 
   "style-and-fashion": {
+    slug: "style-and-fashion",
     title: "Style & Fashion",
-    image: Wilkerson,
+    coverImage: Wilkerson,
   },
   "one-eye": {
+    slug: "one-eye",
     title: "One Eye",
-    image: OneEye,
+    coverImage: OneEye,
   },
   "week-fashion": {
+    slug: "week-fashion",
     title: "Week Fashion",
-    image: Ilona,
+    coverImage: Ilona,
   },
   "be-silent": {
+    slug: "be-silent",
     title: "Be Silent",
-    image: BeSilent,
+    coverImage: BeSilent,
   },
   "cigarette-and-tobacco": {
+    slug: "cigarette-and-tobacco",
     title: "Cigarette & Tobacco",
-    image: Khamkeo,
+    coverImage: Khamkeo,
   },
   "wonderful-body": {
+    slug: "wonderful-body",
     title: "Wonderful Body",
-    image: Mathilde,
+    coverImage: Mathilde,
   },
 };
 
-export const PROJECTS_GRID: (ProjectCardProps | number)[] = [
-  {
-    ...PROJECTS_DATA["dancing-in-black-and-white"],
-    layout: { cols: 5, rows: 2, centered: true },
-  },
-  1,
-  {
-    ...PROJECTS_DATA["style-and-fashion"],
-    layout: { cols: 3 },
-  },
-  1,
-  1,
-  {
-    ...PROJECTS_DATA["one-eye"],
-    layout: { cols: 3 },
-  },
-  1,
-  1,
-  {
-    ...PROJECTS_DATA["week-fashion"],
-    layout: { cols: 3 },
-  },
-  1,
-  {
-    ...PROJECTS_DATA["be-silent"],
-    layout: { cols: 5 },
-  },
-  {
-    ...PROJECTS_DATA["cigarette-and-tobacco"],
-    layout: { cols: 5 },
-  },
-  1,
-  {
-    ...PROJECTS_DATA["wonderful-body"],
-    layout: { cols: 3 },
-  },
-];
+export const PROJECTS_LAYOUT: GridLayout = {
+  cols: 10,
+  gapY: 120,
+  items: [
+    {
+      type: "project",
+      slug: "dancing-in-black-and-white",
+      span: { cols: 5, rows: 2, centered: true },
+    },
+    { type: "spacer", span: 1 },
+    { type: "project", slug: "style-and-fashion", span: { cols: 3 } },
+    { type: "spacer", span: 1 },
+    { type: "spacer", span: 1 },
+    { type: "project", slug: "one-eye", span: { cols: 3 } },
+    { type: "spacer", span: 1 },
+    { type: "spacer", span: 1 },
+    { type: "project", slug: "week-fashion", span: { cols: 3 } },
+    { type: "spacer", span: 1 },
+    { type: "project", slug: "be-silent", span: { cols: 5 } },
+    { type: "project", slug: "cigarette-and-tobacco", span: { cols: 5 } },
+    { type: "spacer", span: 1 },
+    { type: "project", slug: "wonderful-body", span: { cols: 3 } },
+  ],
+};

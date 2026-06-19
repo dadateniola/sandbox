@@ -9,12 +9,12 @@ import Vinogradov from "@/public/images/vinogradov.png";
 
 // Imports
 import { cn } from "@/utils/cn";
-import { HOME_PROJECTS_GRID, SERVICES } from "./data";
+import { HOME_PROJECTS_LAYOUT, SERVICES } from "./data";
 
 import { CTA } from "../global/components";
 import { HomeSection } from "./components";
 import { EXHIBITIONS } from "../exhibitions/data";
-import { ProjectCard } from "../projects/components";
+import { ProjectGrid } from "../projects/components";
 import { ExhibitionCard } from "../exhibitions/components";
 
 const Home = () => {
@@ -118,15 +118,7 @@ const Home = () => {
 
       {/* Projects Section */}
       <HomeSection title="Latest Work" href="/projects">
-        <div className="grid grid-cols-10 gap-y-30">
-          {HOME_PROJECTS_GRID.map((item, index) =>
-            typeof item === "number" ? (
-              <div key={index} style={{ gridColumn: `span ${item}` }} />
-            ) : (
-              <ProjectCard key={index} {...item} />
-            ),
-          )}
-        </div>
+        <ProjectGrid layout={HOME_PROJECTS_LAYOUT} />
       </HomeSection>
 
       {/* Exhibitions Section */}

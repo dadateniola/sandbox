@@ -1,25 +1,26 @@
 import Image from "next/image";
 
 // Types
-import type { ProjectCardProps } from "./types";
+import type { ProjectCardProps, ProjectGridProps } from "./types";
 
 // Imports
 import { cn } from "@/utils/cn";
+import { PROJECTS } from "./data";
 
 // Components
 export const ProjectCard: React.FC<ProjectCardProps> = ({
+  span,
   image,
   title,
-  layout,
 }) => (
   <div
     className={cn(
       "custom-flex-col gap-2.5",
-      layout?.centered && "justify-center",
+      span?.centered && "justify-center",
     )}
     style={{
-      gridRow: layout?.rows ? `span ${layout.rows}` : "span 1",
-      gridColumn: layout?.cols ? `span ${layout.cols}` : "span 1",
+      gridRow: span?.rows ? `span ${span.rows}` : "span 1",
+      gridColumn: span?.cols ? `span ${span.cols}` : "span 1",
     }}
   >
     <p className="text-3xl leading-[120%] uppercase">
@@ -40,5 +41,34 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
       New York <br />
       October 2021
     </p>
+  </div>
+);
+
+export const ProjectGrid: React.FC<ProjectGridProps> = ({ layout }) => (
+  <div
+    className="grid"
+    style={{
+      gap: `${layout.gapY}px 0`,
+      gridTemplateColumns: `repeat(${layout.cols}, minmax(0, 1fr))`,
+    }}
+  >
+    {layout.items.map((item, index) => {
+      if (item.type === "spacer") {
+        return (
+          <div key={index} style={{ gridColumn: `span ${item.span}` }}></div>
+        );
+      }
+
+      const project = PROJECTS[item.slug];
+
+      return (
+        <ProjectCard
+          key={item.slug}
+          span={item.span}
+          title={project.title}
+          image={project.coverImage}
+        />
+      );
+    })}
   </div>
 );
