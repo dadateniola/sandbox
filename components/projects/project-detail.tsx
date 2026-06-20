@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 // Types
 import type { ProjectDetailProps, ProjectKey } from "./types";
 
@@ -16,10 +18,23 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ projectId }) => {
   }
 
   return (
-    <div className="w-full h-screen custom-flex-center">
-      <h1 className="text-[4vw] text-text-default">
-        Project Detail - {project.title}
-      </h1>
+    <div className="pt-56 pb-20 custom-flex-col gap-56">
+      {/* Hero Section */}
+      <section id="hero">
+        <div className="flex justify-center">
+          <div className="w-full max-w-300 flex flex-col items-center">
+            <Image
+              src={project.coverImage}
+              alt={project.title}
+              className="w-[42%] h-auto object-cover"
+            />
+
+            <h1 className="mt-[-7vw] text-text-primary text-[min(11vw,200px)] text-center text-balance leading-[110%] tracking-[-6px]">
+              {project.title}
+            </h1>
+          </div>
+        </div>
+      </section>
     </div>
   );
 };
