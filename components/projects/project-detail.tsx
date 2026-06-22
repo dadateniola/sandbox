@@ -26,8 +26,7 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ projectId }) => {
   const projectDetails = Object.entries(project.details);
 
   return (
-    // pt-56
-    <div className="pt-25 pb-20 custom-flex-col gap-56">
+    <div className="pt-40 pb-20 custom-flex-col gap-56">
       <div className="custom-flex-col gap-32">
         {/* Hero Section */}
         <section id="hero">
@@ -38,7 +37,6 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ projectId }) => {
                 alt={project.title}
                 data-project-slug={project.slug}
                 data-transition-role="project-hero-image"
-                // w-1/2
                 className="w-[40%] h-auto object-cover"
               />
 
@@ -114,7 +112,7 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ projectId }) => {
               </p>
             </div>
 
-            <div className="-mt-15 w-1/2">
+            <div className="-mt-15 w-[40%]">
               <Image
                 src={nextProject.coverImage}
                 alt={nextProject.title}

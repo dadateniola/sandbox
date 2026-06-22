@@ -48,7 +48,7 @@ const Navbar = () => {
               "flex items-center gap-3",
               "transition-transform duration-300",
               {
-                "translate-y-full pointer-events-none":
+                "translate-y-[110%] pointer-events-none":
                   menuOpen || !isProjectDetail,
                 "delay-500": menuState === "closing" || isProjectDetail,
               },

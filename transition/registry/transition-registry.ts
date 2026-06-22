@@ -32,13 +32,16 @@ const registry = (() => {
   register({
     key: "NAVIGATE",
     description: "Default page-to-page transition",
-    run: async ({ state: { menuState, pendingPath } }) => {
+    run: async ({ state: { menuState, activePath, pendingPath } }) => {
       const menuPanel = getMenuPanelTarget();
       const { exiting, entering } = getStageTargets();
 
       const pendingMatch = resolveRoute(pendingPath);
-      const projectId = pendingMatch?.params?.projectId;
+      // TODO: Figure out why this should only check pending not active
+      // Has something to do with returning from project detail page
+      const projectId = pendingMatch?.params?.projectId; 
       const isToProjectDetail = isProjectDetailRoute(pendingPath);
+      const isFromProjectDetail = isProjectDetailRoute(activePath);
 
       const tl = createBaseTimeline();
 
@@ -87,6 +90,50 @@ const registry = (() => {
               left: `${heroRect.left}px`,
               width: `${heroRect.width}px`,
               height: `${heroRect.height}px`,
+            })
+            .set(clone, { zIndex: "-1" })
+            .to(entering, { autoAlpha: 1, duration: 0.5, ease: "power1.out" })
+            .add(() => {
+              clone.remove();
+            });
+        }
+      } else if (projectId && isFromProjectDetail) {
+        const { cardImage, heroImage } = getProjectTargets(projectId);
+
+        if (!cardImage || !heroImage) {
+          applyExit(tl, exiting);
+          applyEnter(tl, entering);
+        } else {
+          const cardRect = cardImage.getBoundingClientRect();
+          const heroRect = heroImage.getBoundingClientRect();
+
+          const clone = cardImage.cloneNode(true) as HTMLElement;
+
+          Object.assign(clone.style, {
+            position: "fixed",
+            top: `${heroRect.top}px`,
+            left: `${heroRect.left}px`,
+            width: `${heroRect.width}px`,
+            height: `${heroRect.height}px`,
+            zIndex: "1",
+            pointerEvents: "none",
+          });
+
+          document.body.appendChild(clone);
+
+          tl.set(entering, { autoAlpha: 0 });
+
+          tl.to(exiting, {
+            autoAlpha: 0,
+            pointerEvents: "none",
+            duration: 0.5,
+            ease: "power1.out",
+          })
+            .to(clone, {
+              top: `${cardRect.top}px`,
+              left: `${cardRect.left}px`,
+              width: `${cardRect.width}px`,
+              height: `${cardRect.height}px`,
             })
             .set(clone, { zIndex: "-1" })
             .to(entering, { autoAlpha: 1, duration: 0.5, ease: "power1.out" })
