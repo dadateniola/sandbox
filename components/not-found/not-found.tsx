@@ -28,8 +28,8 @@ const NotFound: React.FC<NotFoundProps> = ({ cta, type = "Page" }) => {
               className="-mt-9 w-full h-auto object-cover"
             />
 
-            <Link href={cta?.href || "/"}>
-              <CTA size={220} className="-mt-27.5">
+            <Link href={cta?.href || "/"} className="-mt-27.5">
+              <CTA size={220}>
                 Back to <br /> {formatString(cta?.type || "Home", "capitalize")}
               </CTA>
             </Link>

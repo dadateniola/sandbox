@@ -84,3 +84,19 @@ export const ArrowRight: React.FC<SVGProps> = () => (
     <path d="M23.5 0.353516L30.5 7.35352L23.5 14.3535" stroke="#101010" />
   </svg>
 );
+
+export const ArrowLeft: React.FC<SVGProps> = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="32"
+    height="15"
+    viewBox="0 0 32 15"
+    fill="none"
+  >
+    <path d="M31.207 7.35355H1.20703" stroke="#101010" />
+    <path
+      d="M7.70703 0.353554L0.707031 7.35355L7.70703 14.3536"
+      stroke="#101010"
+    />
+  </svg>
+);

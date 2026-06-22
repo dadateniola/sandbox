@@ -1,22 +1,28 @@
 // Types
-import type { GridItemSpan, GridLayout } from "../global/types";
+import type { GridItem, GridItemSpan, GridLayout } from "../global/types";
 
-export type ProjectKey =
-  | "dancing-in-black-and-white"
-  | "style-and-fashion"
-  | "one-eye"
-  | "week-fashion"
-  | "be-silent"
-  | "cigarette-and-tobacco"
-  | "wonderful-body";
+// Imports
+import { PROJECT_KEYS } from "./data";
+
+export type ProjectKey = (typeof PROJECT_KEYS)[number];
 
 export type ProjectDefinition = {
   slug: ProjectKey;
   title: string;
   coverImage: StaticImageData;
+  details: { year: number; service: string; client: string };
+  gallery?: GridLayout<
+    Extract<GridItem, { type: "image" }> | Extract<GridItem, { type: "spacer" }>
+  >;
 };
 export interface ProjectCardProps extends ProjectDefinition {
   span?: GridItemSpan;
+}
+
+export interface GalleryImageProps {
+  alt?: string;
+  span?: GridItemSpan;
+  src: StaticImageData;
 }
 
 export interface ProjectGridProps {
@@ -25,4 +31,10 @@ export interface ProjectGridProps {
 
 export interface ProjectDetailProps {
   projectId?: string;
+}
+
+export interface ProjectDetailAboutProps {
+  title: string;
+  className?: string;
+  children: React.ReactNode;
 }

@@ -22,13 +22,14 @@ export type GridItemSpan = {
 };
 
 export type GridItem =
+  | { type: "image"; src: StaticImageData; alt?: string; span?: GridItemSpan }
   | { type: "project"; slug: ProjectKey; span?: GridItemSpan }
   | { type: "spacer"; span: number };
 
-export type GridLayout = {
+export type GridLayout<T = GridItem> = {
   cols: number;
   gapY?: number;
-  items: GridItem[];
+  items: T[];
 };
 
 export interface CTAProps {
