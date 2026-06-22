@@ -49,9 +49,11 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
       <Image
         src={coverImage}
         alt={title}
+        data-project-slug={slug}
+        data-transition-role="project-card-image"
         className={cn(
           "w-full h-auto object-cover",
-          "group-hover:scale-105 transition-transform duration-500",
+          // "group-hover:scale-105 transition-transform duration-500",
         )}
       />
     </Link>

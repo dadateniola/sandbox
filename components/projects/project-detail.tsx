@@ -26,7 +26,8 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ projectId }) => {
   const projectDetails = Object.entries(project.details);
 
   return (
-    <div className="pt-56 pb-20 custom-flex-col gap-56">
+    // pt-56
+    <div className="pt-25 pb-20 custom-flex-col gap-56">
       <div className="custom-flex-col gap-32">
         {/* Hero Section */}
         <section id="hero">
@@ -35,7 +36,10 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ projectId }) => {
               <Image
                 src={project.coverImage}
                 alt={project.title}
-                className="w-1/2 h-auto object-cover"
+                data-project-slug={project.slug}
+                data-transition-role="project-hero-image"
+                // w-1/2
+                className="w-[40%] h-auto object-cover"
               />
 
               <h1 className="mt-[-7vw] text-text-primary text-[min(11vw,200px)] text-center text-balance leading-[110%] tracking-[-6px]">
@@ -110,11 +114,15 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ projectId }) => {
               </p>
             </div>
 
-            <Image
-              src={nextProject.coverImage}
-              alt={nextProject.title}
-              className="-mt-15 w-1/2 h-auto object-cover"
-            />
+            <div className="-mt-15 w-1/2">
+              <Image
+                src={nextProject.coverImage}
+                alt={nextProject.title}
+                data-project-slug={nextProject.slug}
+                data-transition-role="project-card-image"
+                className="w-full h-auto object-cover"
+              />
+            </div>
 
             <Link href={getProjectLink(nextProject.slug)} className="-mt-27.5">
               <CTA size={220} className="text-[24px]">

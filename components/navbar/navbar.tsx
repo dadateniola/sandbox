@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 // Imports
 import { cn } from "@/utils/cn";
 import { ArrowLeft } from "../svg/svg";
-import { resolveRoute } from "../global/data";
+import { isProjectDetailRoute } from "../global/data";
 import { useTransitionEngine } from "@/transition/engine/TransitionContext";
 
 const Navbar = () => {
@@ -26,8 +26,7 @@ const Navbar = () => {
   };
 
   // Render
-  const match = resolveRoute(pathname);
-  const isProjectDetail = match?.route.path === "/projects/:projectId";
+  const isProjectDetail = isProjectDetailRoute(pathname);
 
   const menuOpen = menuState === "open" || menuState === "opening";
 

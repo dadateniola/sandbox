@@ -18,6 +18,18 @@ export const getStageTargets = (): StageTargets => {
   return { exiting, entering, active };
 };
 
+export const getProjectTargets = (slug: string) => {
+  const heroImage = document.querySelector(
+    `[data-transition-role="project-hero-image"][data-project-slug="${slug}"]`,
+  ) as HTMLElement | null;
+
+  const cardImage = document.querySelector(
+    `[data-transition-role="project-card-image"][data-project-slug="${slug}"]`,
+  ) as HTMLElement | null;
+
+  return { heroImage, cardImage };
+};
+
 export const getMenuPanelTarget = (): HTMLElement | null => {
   return document.querySelector(
     '[data-transition-role="menu-panel"]',

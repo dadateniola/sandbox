@@ -7,6 +7,7 @@ import {
   getTargetParts,
   getLoaderTarget,
   getStageTargets,
+  getProjectTargets,
   getMenuPanelTarget,
 } from "../adapters/dom-targets";
 
@@ -18,6 +19,7 @@ import {
 } from "../primitives/timeline-primitives";
 
 import { runTimeline } from "../adapters/gsap-adapter";
+import { isProjectDetailRoute, resolveRoute } from "@/components/global/data";
 
 // Registry
 const registry = (() => {
@@ -30,9 +32,13 @@ const registry = (() => {
   register({
     key: "NAVIGATE",
     description: "Default page-to-page transition",
-    run: async ({ state: { menuState } }) => {
+    run: async ({ state: { menuState, pendingPath } }) => {
       const menuPanel = getMenuPanelTarget();
       const { exiting, entering } = getStageTargets();
+
+      const pendingMatch = resolveRoute(pendingPath);
+      const projectId = pendingMatch?.params?.projectId;
+      const isToProjectDetail = isProjectDetailRoute(pendingPath);
 
       const tl = createBaseTimeline();
 
@@ -44,6 +50,50 @@ const registry = (() => {
 
         applyExit(tl, menuPanel);
         applyEnter(tl, entering);
+      } else if (projectId && isToProjectDetail) {
+        const { cardImage, heroImage } = getProjectTargets(projectId);
+
+        if (!cardImage || !heroImage) {
+          applyExit(tl, exiting);
+          applyEnter(tl, entering);
+        } else {
+          const cardRect = cardImage.getBoundingClientRect();
+          const heroRect = heroImage.getBoundingClientRect();
+
+          const clone = cardImage.cloneNode(true) as HTMLElement;
+
+          Object.assign(clone.style, {
+            position: "fixed",
+            top: `${cardRect.top}px`,
+            left: `${cardRect.left}px`,
+            width: `${cardRect.width}px`,
+            height: `${cardRect.height}px`,
+            zIndex: "1",
+            pointerEvents: "none",
+          });
+
+          document.body.appendChild(clone);
+
+          tl.set(entering, { autoAlpha: 0 });
+
+          tl.to(exiting, {
+            autoAlpha: 0,
+            pointerEvents: "none",
+            duration: 0.5,
+            ease: "power1.out",
+          })
+            .to(clone, {
+              top: `${heroRect.top}px`,
+              left: `${heroRect.left}px`,
+              width: `${heroRect.width}px`,
+              height: `${heroRect.height}px`,
+            })
+            .set(clone, { zIndex: "-1" })
+            .to(entering, { autoAlpha: 1, duration: 0.5, ease: "power1.out" })
+            .add(() => {
+              clone.remove();
+            });
+        }
       } else {
         applyExit(tl, exiting);
         applyEnter(tl, entering);

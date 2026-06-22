@@ -29,8 +29,10 @@ export const ROUTES: RouteDefinition[] = [
 
 // Helpers
 export const resolveRoute = (
-  path: string,
+  path?: string | null,
 ): { route: RouteDefinition; params: Record<string, string> } | undefined => {
+  if (!path) return undefined;
+
   const normalizedPath = path.split("?")[0].split("#")[0];
 
   const pathSegments = normalizedPath.split("/").filter(Boolean);
@@ -67,4 +69,11 @@ export const resolveRoute = (
   }
 
   return undefined;
+};
+
+export const isProjectDetailRoute = (path?: string | null): boolean => {
+  if (!path) return false;
+
+  const match = resolveRoute(path);
+  return match?.route.path === "/projects/:projectId";
 };
