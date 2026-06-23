@@ -33,12 +33,7 @@ const registry = (() => {
     key: "NAVIGATE",
     description: "Default page-to-page transition",
     run: async ({
-      state: {
-        viewport: { scroll },
-        menuState,
-        activePath,
-        pendingPath,
-      },
+      state: { menuState, activePath, pendingPath },
       dispatch,
     }) => {
       const menuPanel = getMenuPanelTarget();
@@ -110,7 +105,10 @@ const registry = (() => {
       } else if (activeProjectId && isFromProjectDetail) {
         const { cardImage, heroImage } = getProjectTargets(activeProjectId);
 
-        if (!cardImage || !heroImage) {
+        const hasScrolledPastHero =
+          (heroImage?.getBoundingClientRect().bottom || 1) < 0;
+
+        if (!cardImage || !heroImage || hasScrolledPastHero) {
           applyExit(tl, exiting);
           applyEnter(tl, entering);
         } else {
@@ -118,15 +116,22 @@ const registry = (() => {
           const heroRect = heroImage.getBoundingClientRect();
           const { scrollContainer } = getTargetParts(entering);
 
-          const currentScrollY = scroll.exiting || 0;
           const scrollHeight = scrollContainer?.scrollHeight || 0;
 
           const maxScrollY = scrollHeight - window.innerHeight;
-          const desiredScrollY = currentScrollY + cardRect.top;
+
+          const viewportHeight = window.innerHeight;
+
+          const preferredTargetTop =
+            cardRect.height >= viewportHeight * 0.8
+              ? viewportHeight * 0.1
+              : (viewportHeight - cardRect.height) / 2;
+
+          const desiredScrollY = cardRect.top - preferredTargetTop;
+
           const finalScrollY = Math.min(desiredScrollY, maxScrollY);
 
-          const scrollDelta = finalScrollY - currentScrollY;
-          const targetTop = cardRect.top - scrollDelta;
+          const actualTargetTop = cardRect.top - finalScrollY;
 
           dispatch({
             type: "SET_VIEWPORT",
@@ -156,7 +161,7 @@ const registry = (() => {
             ease: "power1.out",
           })
             .to(clone, {
-              top: `${targetTop}px`,
+              top: `${actualTargetTop}px`,
               left: `${cardRect.left}px`,
               width: `${cardRect.width}px`,
               height: `${cardRect.height}px`,
