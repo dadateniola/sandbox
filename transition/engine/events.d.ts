@@ -30,7 +30,7 @@ export type TransitionEvent =
     }
   | {
       type: "CLEANUP";
-      state: Partial<TransitionState> | null;
+      requestType: TransitionEvent["type"];
     };
 
 export type TransitionEventType = TransitionEvent["type"];

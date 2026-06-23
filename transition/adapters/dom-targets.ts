@@ -44,7 +44,7 @@ export const getLoaderTarget = (): HTMLElement | null => {
 
 export const getTargetParts = (element: HTMLElement | null) => {
   if (!element) {
-    return { content: null, overlay: null };
+    return { content: null, overlay: null, scrollContainer: null };
   }
 
   return {
@@ -53,6 +53,9 @@ export const getTargetParts = (element: HTMLElement | null) => {
     ) as HTMLElement | null,
     overlay: element.querySelector(
       '[data-transition-role="overlay"]',
+    ) as HTMLElement | null,
+    scrollContainer: element.querySelector(
+      '[data-transition-role="scroll-container"]',
     ) as HTMLElement | null,
   };
 };

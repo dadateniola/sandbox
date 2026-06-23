@@ -25,9 +25,6 @@ export type TransitionState = {
     scroll: Partial<Record<PageStageState, number>>;
   };
   request: TransitionRequest | null;
-  cleanup: Partial<
-    Omit<TransitionState, "phase" | "request" | "cleanup">
-  > | null;
   isLoaderVisible: boolean;
   isMobileViewport: boolean;
 };

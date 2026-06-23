@@ -21,7 +21,7 @@ const TransitionOrchestrator = () => {
       const transition = getTransition(request.type);
       await transition.run({ state, request, dispatch });
 
-      dispatch({ type: "CLEANUP", state: state.cleanup });
+      dispatch({ type: "CLEANUP", requestType: request.type });
     };
 
     run();

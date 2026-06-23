@@ -50,6 +50,7 @@ const PageState: React.FC<PageStateProps> = ({
         )}
       >
         <div
+          data-transition-role="scroll-container"
           className={cn(
             stageState === "fixed"
               ? "size-full"

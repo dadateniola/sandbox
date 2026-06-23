@@ -116,10 +116,22 @@ const registry = (() => {
         } else {
           const cardRect = cardImage.getBoundingClientRect();
           const heroRect = heroImage.getBoundingClientRect();
+          const { scrollContainer } = getTargetParts(entering);
 
-          const newScrollY = (scroll.exiting || 0) + cardRect.top;
+          const currentScrollY = scroll.exiting || 0;
+          const scrollHeight = scrollContainer?.scrollHeight || 0;
 
-          dispatch({ type: "SET_VIEWPORT", scroll: { entering: newScrollY } });
+          const maxScrollY = scrollHeight - window.innerHeight;
+          const desiredScrollY = currentScrollY + cardRect.top;
+          const finalScrollY = Math.min(desiredScrollY, maxScrollY);
+
+          const scrollDelta = finalScrollY - currentScrollY;
+          const targetTop = cardRect.top - scrollDelta;
+
+          dispatch({
+            type: "SET_VIEWPORT",
+            scroll: { entering: finalScrollY },
+          });
 
           const clone = cardImage.cloneNode(true) as HTMLElement;
 
@@ -144,7 +156,7 @@ const registry = (() => {
             ease: "power1.out",
           })
             .to(clone, {
-              top: `${0}px`,
+              top: `${targetTop}px`,
               left: `${cardRect.left}px`,
               width: `${cardRect.width}px`,
               height: `${cardRect.height}px`,

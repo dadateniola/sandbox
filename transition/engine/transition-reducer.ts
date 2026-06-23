@@ -16,7 +16,6 @@ export const createInitialTransitionState = (
     scroll: {},
   },
   request: null,
-  cleanup: null,
   isLoaderVisible: true,
   isMobileViewport: false,
 });
@@ -50,39 +49,49 @@ const canProcessEvent = (
   }
 };
 
-const cleanupReducer = (state: TransitionState): TransitionState => {
-  switch (state.request?.type) {
-    case "NAVIGATE":
-      return {
-        ...state,
-        activePath: state.pendingPath || state.activePath,
-        pendingPath: null,
-        menuState: "closed",
-        viewport: {
-          mode: "static",
-          scroll: { active: state.viewport.scroll.entering },
-        },
-      };
-    case "MENU_OPEN":
-      return {
-        ...state,
-        menuState: "open",
-      };
-    case "MENU_CLOSE":
-      return {
-        ...state,
-        menuState: "closed",
-        viewport: { ...state.viewport, mode: "static" },
-      };
-    case "HIDE_LOADER":
-      return {
-        ...state,
-        isLoaderVisible: false,
-        viewport: { mode: "static", scroll: {} },
-      };
-    default:
-      return state;
-  }
+const cleanupReducer = (
+  state: TransitionState,
+  requestType: TransitionEvent["type"],
+): TransitionState => {
+  const getPatch = (): Partial<TransitionState> => {
+    switch (requestType) {
+      case "NAVIGATE":
+        return {
+          activePath: state.pendingPath || state.activePath,
+          pendingPath: null,
+          menuState: "closed",
+          viewport: {
+            mode: "static",
+            scroll: { active: state.viewport.scroll.entering },
+          },
+        };
+      case "MENU_OPEN":
+        return {
+          menuState: "open",
+        };
+      case "MENU_CLOSE":
+        return {
+          menuState: "closed",
+          viewport: { ...state.viewport, mode: "static" },
+        };
+      case "HIDE_LOADER":
+        return {
+          isLoaderVisible: false,
+          viewport: { mode: "static", scroll: {} },
+        };
+      default:
+        return {};
+    }
+  };
+
+  const patch = getPatch();
+
+  return {
+    ...state,
+    ...patch,
+    phase: "idle",
+    request: null,
+  };
 };
 
 export const transitionReducer = (
@@ -106,15 +115,6 @@ export const transitionReducer = (
         menuState: state.menuState === "open" ? "closing" : state.menuState,
         viewport: { mode: "fixed", scroll: { exiting: event.scrollY } },
         request: { type: event.type },
-        cleanup: {
-          activePath: event.to,
-          pendingPath: null,
-          menuState: "closed",
-          viewport: {
-            mode: "static",
-            scroll: { active: state.viewport.scroll.entering },
-          },
-        },
       };
     }
     case "MENU_OPEN": {
@@ -124,7 +124,6 @@ export const transitionReducer = (
         menuState: "opening",
         viewport: { mode: "fixed", scroll: { active: event.scrollY } },
         request: { type: event.type },
-        cleanup: { menuState: "open" },
       };
     }
     case "MENU_CLOSE": {
@@ -133,10 +132,6 @@ export const transitionReducer = (
         phase: "animating",
         menuState: "closing",
         request: { type: event.type },
-        cleanup: {
-          menuState: "closed",
-          viewport: { ...state.viewport, mode: "static" },
-        },
       };
     }
     case "HIDE_LOADER": {
@@ -144,10 +139,6 @@ export const transitionReducer = (
         ...state,
         phase: "animating",
         request: { type: event.type },
-        cleanup: {
-          isLoaderVisible: false,
-          viewport: { mode: "static", scroll: {} },
-        },
       };
     }
     case "SET_VIEWPORT": {
@@ -168,13 +159,7 @@ export const transitionReducer = (
       };
     }
     case "CLEANUP": {
-      return {
-        ...state,
-        ...event.state,
-        phase: "idle",
-        request: null,
-        cleanup: null,
-      };
+      return cleanupReducer(state, event.requestType);
     }
 
     default:
