@@ -32,14 +32,24 @@ const registry = (() => {
   register({
     key: "NAVIGATE",
     description: "Default page-to-page transition",
-    run: async ({ state: { menuState, activePath, pendingPath } }) => {
+    run: async ({
+      state: {
+        viewport: { scroll },
+        menuState,
+        activePath,
+        pendingPath,
+      },
+      dispatch,
+    }) => {
       const menuPanel = getMenuPanelTarget();
       const { exiting, entering } = getStageTargets();
 
+      const activeMatch = resolveRoute(activePath);
       const pendingMatch = resolveRoute(pendingPath);
-      // TODO: Figure out why this should only check pending not active
-      // Has something to do with returning from project detail page
-      const projectId = pendingMatch?.params?.projectId; 
+
+      const activeProjectId = activeMatch?.params?.projectId;
+      const pendingProjectId = pendingMatch?.params?.projectId;
+
       const isToProjectDetail = isProjectDetailRoute(pendingPath);
       const isFromProjectDetail = isProjectDetailRoute(activePath);
 
@@ -53,8 +63,8 @@ const registry = (() => {
 
         applyExit(tl, menuPanel);
         applyEnter(tl, entering);
-      } else if (projectId && isToProjectDetail) {
-        const { cardImage, heroImage } = getProjectTargets(projectId);
+      } else if (pendingProjectId && isToProjectDetail) {
+        const { cardImage, heroImage } = getProjectTargets(pendingProjectId);
 
         if (!cardImage || !heroImage) {
           applyExit(tl, exiting);
@@ -97,8 +107,8 @@ const registry = (() => {
               clone.remove();
             });
         }
-      } else if (projectId && isFromProjectDetail) {
-        const { cardImage, heroImage } = getProjectTargets(projectId);
+      } else if (activeProjectId && isFromProjectDetail) {
+        const { cardImage, heroImage } = getProjectTargets(activeProjectId);
 
         if (!cardImage || !heroImage) {
           applyExit(tl, exiting);
@@ -106,6 +116,10 @@ const registry = (() => {
         } else {
           const cardRect = cardImage.getBoundingClientRect();
           const heroRect = heroImage.getBoundingClientRect();
+
+          const newScrollY = (scroll.exiting || 0) + cardRect.top;
+
+          dispatch({ type: "SET_VIEWPORT", scroll: { entering: newScrollY } });
 
           const clone = cardImage.cloneNode(true) as HTMLElement;
 
@@ -130,7 +144,7 @@ const registry = (() => {
             ease: "power1.out",
           })
             .to(clone, {
-              top: `${cardRect.top}px`,
+              top: `${0}px`,
               left: `${cardRect.left}px`,
               width: `${cardRect.width}px`,
               height: `${cardRect.height}px`,

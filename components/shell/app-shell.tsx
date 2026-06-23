@@ -39,7 +39,7 @@ const AppShell = () => {
 
   useLayoutEffect(() => {
     if (viewport.mode === "static") {
-      window.scrollTo(0, viewport.scrollY);
+      window.scrollTo(0, viewport.scroll.active || 0);
     }
   }, [viewport]);
 

@@ -31,9 +31,12 @@ const IntroLoader = () => {
 
     tl.set(loaderTexts, { yPercent: 100, autoAlpha: 1 });
 
-    tl.to(loaderTexts, { yPercent: 0, stagger: 0.1, ease: "power4.out" }).call(
-      () => setIsAnimating(false),
-    );
+    tl.to(loaderTexts, {
+      yPercent: 0,
+      stagger: 0.1,
+      delay: 0.3,
+      ease: "power4.out",
+    }).call(() => setIsAnimating(false));
   }, []);
 
   useEffect(() => {

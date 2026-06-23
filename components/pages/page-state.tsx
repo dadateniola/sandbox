@@ -21,8 +21,7 @@ const PageState: React.FC<PageStateProps> = ({
 
   // Render
   const shouldFixViewport = viewport.mode === "fixed" || stageState === "fixed";
-  const applyScrollOffset =
-    shouldFixViewport && (stageState === "active" || stageState === "exiting");
+  const applyScrollOffset = shouldFixViewport && stageState in viewport.scroll;
 
   return (
     <div
@@ -58,7 +57,7 @@ const PageState: React.FC<PageStateProps> = ({
           )}
           style={{
             transform: applyScrollOffset
-              ? `translateY(-${viewport.scrollY}px)`
+              ? `translateY(-${viewport.scroll[stageState]}px)`
               : undefined,
           }}
         >

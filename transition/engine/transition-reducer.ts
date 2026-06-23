@@ -13,7 +13,7 @@ export const createInitialTransitionState = (
   menuState: "closed",
   viewport: {
     mode: "fixed",
-    scrollY: 0,
+    scroll: {},
   },
   request: null,
   cleanup: null,
@@ -50,6 +50,41 @@ const canProcessEvent = (
   }
 };
 
+const cleanupReducer = (state: TransitionState): TransitionState => {
+  switch (state.request?.type) {
+    case "NAVIGATE":
+      return {
+        ...state,
+        activePath: state.pendingPath || state.activePath,
+        pendingPath: null,
+        menuState: "closed",
+        viewport: {
+          mode: "static",
+          scroll: { active: state.viewport.scroll.entering },
+        },
+      };
+    case "MENU_OPEN":
+      return {
+        ...state,
+        menuState: "open",
+      };
+    case "MENU_CLOSE":
+      return {
+        ...state,
+        menuState: "closed",
+        viewport: { ...state.viewport, mode: "static" },
+      };
+    case "HIDE_LOADER":
+      return {
+        ...state,
+        isLoaderVisible: false,
+        viewport: { mode: "static", scroll: {} },
+      };
+    default:
+      return state;
+  }
+};
+
 export const transitionReducer = (
   state: TransitionState,
   event: TransitionEvent,
@@ -69,13 +104,16 @@ export const transitionReducer = (
         phase: "animating",
         pendingPath: event.to,
         menuState: state.menuState === "open" ? "closing" : state.menuState,
-        viewport: { mode: "fixed", scrollY: event.scrollY },
+        viewport: { mode: "fixed", scroll: { exiting: event.scrollY } },
         request: { type: event.type },
         cleanup: {
           activePath: event.to,
           pendingPath: null,
           menuState: "closed",
-          viewport: { mode: "static", scrollY: 0 },
+          viewport: {
+            mode: "static",
+            scroll: { active: state.viewport.scroll.entering },
+          },
         },
       };
     }
@@ -84,7 +122,7 @@ export const transitionReducer = (
         ...state,
         phase: "animating",
         menuState: "opening",
-        viewport: { mode: "fixed", scrollY: event.scrollY },
+        viewport: { mode: "fixed", scroll: { active: event.scrollY } },
         request: { type: event.type },
         cleanup: { menuState: "open" },
       };
@@ -94,11 +132,10 @@ export const transitionReducer = (
         ...state,
         phase: "animating",
         menuState: "closing",
-        viewport: { mode: "fixed", scrollY: state.viewport.scrollY },
         request: { type: event.type },
         cleanup: {
           menuState: "closed",
-          viewport: { mode: "static", scrollY: state.viewport.scrollY },
+          viewport: { ...state.viewport, mode: "static" },
         },
       };
     }
@@ -109,7 +146,18 @@ export const transitionReducer = (
         request: { type: event.type },
         cleanup: {
           isLoaderVisible: false,
-          viewport: { mode: "static", scrollY: 0 },
+          viewport: { mode: "static", scroll: {} },
+        },
+      };
+    }
+    case "SET_VIEWPORT": {
+      return {
+        ...state,
+        viewport: {
+          mode: event.mode || state.viewport.mode,
+          scroll: event.replace
+            ? event.scroll
+            : { ...state.viewport.scroll, ...event.scroll },
         },
       };
     }

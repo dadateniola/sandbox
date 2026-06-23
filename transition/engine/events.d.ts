@@ -1,5 +1,5 @@
 // Types
-import type { TransitionState } from "./types";
+import type { TransitionState, ViewportMode } from "./types";
 
 export type TransitionEvent =
   | {
@@ -17,6 +17,12 @@ export type TransitionEvent =
     }
   | {
       type: "HIDE_LOADER";
+    }
+  | {
+      type: "SET_VIEWPORT";
+      mode?: ViewportMode;
+      scroll: TransitionState["viewport"]["scroll"];
+      replace?: boolean;
     }
   | {
       type: "SET_MOBILE_VIEWPORT";

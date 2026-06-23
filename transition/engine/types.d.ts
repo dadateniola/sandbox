@@ -1,6 +1,7 @@
 import { Dispatch } from "react";
 
 // Types
+import type { PageStageState } from "@/components/pages/types";
 import type { TransitionEvent, TransitionEventType } from "./events";
 
 export type TransitionPhase = "idle" | "animating";
@@ -21,7 +22,7 @@ export type TransitionState = {
   menuState: MenuState;
   viewport: {
     mode: ViewportMode;
-    scrollY: number;
+    scroll: Partial<Record<PageStageState, number>>;
   };
   request: TransitionRequest | null;
   cleanup: Partial<
