@@ -33,11 +33,6 @@ const canProcessEvent = (
       return event.to !== state.activePath && event.to !== state.pendingPath;
     }
     case "MENU_OPEN":
-      return (
-        state.menuState !== "opening" &&
-        state.menuState !== "closing" &&
-        state.phase !== "animating"
-      );
     case "MENU_CLOSE":
       return (
         state.menuState !== "opening" &&
@@ -49,7 +44,7 @@ const canProcessEvent = (
   }
 };
 
-const cleanupReducer = (
+const applyCleanup = (
   state: TransitionState,
   requestType: TransitionEvent["type"],
 ): TransitionState => {
@@ -159,7 +154,7 @@ export const transitionReducer = (
       };
     }
     case "CLEANUP": {
-      return cleanupReducer(state, event.requestType);
+      return applyCleanup(state, event.requestType);
     }
 
     default:
