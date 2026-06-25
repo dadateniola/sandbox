@@ -25,11 +25,19 @@ const AppShell = () => {
 
   // Effects
   useEffect(() => {
+    history.scrollRestoration = "manual";
+
+    return () => {
+      history.scrollRestoration = "auto";
+    };
+  }, []);
+
+  useEffect(() => {
     if (isMobile === undefined) return;
     dispatch({ type: "SET_MOBILE_VIEWPORT", isMobile });
   }, [isMobile, dispatch]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     dispatch({
       type: "NAVIGATE",
       to: pathname,
