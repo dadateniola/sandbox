@@ -1,5 +1,7 @@
 // Utils
-export const runTimeline = (timeline: gsap.core.Timeline): Promise<void> => {
+export const runTimeline = (timeline?: gsap.core.Timeline): Promise<void> => {
+  if (!timeline) return Promise.resolve();
+
   return new Promise((resolve, reject) => {
     timeline.eventCallback("onComplete", () => resolve());
     timeline.eventCallback("onInterrupt", () => {

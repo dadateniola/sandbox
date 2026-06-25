@@ -18,7 +18,11 @@ export const getStageTargets = (): StageTargets => {
   return { exiting, entering, active };
 };
 
-export const getProjectTargets = (slug: string) => {
+export const getProjectTargets = (slug?: string | null) => {
+  if (!slug) {
+    return { heroImage: null, cardImage: null };
+  }
+
   const heroImage = document.querySelector(
     `[data-transition-role="project-hero-image"][data-project-slug="${slug}"]`,
   ) as HTMLElement | null;
