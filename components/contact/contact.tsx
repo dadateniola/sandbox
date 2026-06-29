@@ -20,14 +20,14 @@ const Contact = () => {
               <span className="text-text-primary">Together</span>
             </h1>
 
-            <div className="-mt-8 flex items-center justify-center gap-10">
-              <div className="flex-1">
-                <Image src={Olenka} alt="Olenka" className="w-full h-auto" />
-              </div>
-              <Image src={Jack} alt="Jack" className="w-[50%] h-auto" />
-              <div className="flex-1">
-                <Image src={Haryo} alt="Haryo" className="w-full h-auto" />
-              </div>
+            <div className="-mt-8 grid grid-cols-4 items-center gap-10">
+              <Image src={Olenka} alt="Olenka" className="w-full h-auto" />
+              <Image
+                src={Jack}
+                alt="Jack"
+                className="col-span-2 w-full h-auto"
+              />
+              <Image src={Haryo} alt="Haryo" className="w-full h-auto" />
             </div>
 
             <a
